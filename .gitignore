@@ -12,3 +12,5 @@ build/
 doc/*.txt
 # ignore all .txt files in the doc/directory
 doc/**/*.txt
+
+# I want change somthing for "--amend"
