@@ -81,7 +81,13 @@ ex:
 or `git commit -a -m "want change editor"`来跳过git add 步骤
 
 ## 移除文件
-`git rm delfile.md`
+- 从文件目录中删除
+	`git rm delfile.md`
+- 从仓库删除（亦从暂存区域删除）
+	`git rm --cached delfile.md`
+- 也可以使用`glob`模式
+	`git rm log/\*.log`
+- 　
 
 
 
