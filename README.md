@@ -205,6 +205,20 @@ ex: `git remote show origin`
 ## 远程仓库的删除和重命名
 	git remote rename test paul
 	git remote rm paul
-	
+ 
+
+# 打标签
+## 列显示已有的标签
+	git tag
+	git tag -l 'v1.4.2'
+
+## 新建标签
+Git有两种标签类型: 轻量级的`lightweight` 和 附注的`annotated`。
+### 含附注的标签
+	git tag -a v1.1 -m 'my version 1.1'
+
+可以使用`git show`来查看相应标签的版本信息。
+	git show v1.1
+## 部署标签
 
 
