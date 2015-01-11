@@ -220,5 +220,24 @@ Git有两种标签类型: 轻量级的`lightweight` 和 附注的`annotated`。
 可以使用`git show`来查看相应标签的版本信息。
 	git show v1.1
 ## 部署标签
+如果有自己的私钥，还可以用GPG来签署标签，只需要把之前的`-a`改为`-s`(signed)即可:
+	git tag -s v1.2 -m 'my signed 1.2 tag'
+**在Mac内必须想要安装gpgtool**: `brew install gpg`
+
+## 轻量级标签
+就是一个保存着对应提交对象的校检和信息的文件。一个`-a`,`-s`,`-m`都不要用。直接给出标签名字
+	git tag v1.3-lw
+
+## 验证标签
+	git tag -v [tag-name]
+
+## 后期加注标签
+打标签的时候跟上对应提交对象的校验
+	git tag -a v1.0 8f3e6e
+
+## 分享标签
+	git push origin [tagname]
+ex: `git push origin v1.0`
+
 
 
