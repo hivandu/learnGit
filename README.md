@@ -14,5 +14,10 @@ ex: `git config user.name`
 
 # 取得项目的Git仓库
 ## 初始化新仓库
-`git init`
-`
+	git init
+	git add *.c
+	git add README
+	git commit -m 'initial project version'
+
+
+\`
