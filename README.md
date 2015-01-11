@@ -11,4 +11,8 @@
 ## 查看配置信息
 `git config —list`
 ex: `git config user.name`
-## 
+
+# 取得项目的Git仓库
+## 初始化新仓库
+`git init`
+`
