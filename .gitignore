@@ -13,11 +13,7 @@ doc/*.txt
 # ignore all .txt files in the doc/directory
 doc/**/*.txt
 
+.gitignore
+.plist
+
 # I want change somthing for "--amend"
-
-
-iA\ Writer\ Pro.app ▸ Contents ▸ MacOS
-
-ln -s /Applications/iA\ Writer\ Pro.app/Contents/MacOS/iA\ Writer\ Pro /usr/local/bin/ia
-
-alias iaw='open -a "iA Writer Pro"'
