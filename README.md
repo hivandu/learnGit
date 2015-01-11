@@ -163,3 +163,7 @@ ex:
 ## 修改最后一次提交
 	git commit --amend
 
+## 取消已经暂存的文件
+	git reset HEAD README.md
+
+
