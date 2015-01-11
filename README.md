@@ -47,7 +47,7 @@ ex: `git config user.name`
 - 可以使用标准的 glob 模式匹配。
 - 匹配模式最后跟反斜杠（/）说明要忽略的是目录。
 - 要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。”
-> “所谓的 glob 模式是指 shell 所使用的简化了的正则表达式。星号（*）匹配零个或多个任意字符；[abc]() 匹配任何一个列在方括号中的字符（这个例子要么匹配一个 a，要么匹配一个 b，要么匹配一个 c）；问号（?）只匹配一个任意字符；如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如 [0-9]() 表示匹配所有 0 到 9 的数字）。”
+> “所谓的 glob 模式是指 shell 所使用的简化了的正则表达式。星号（\*）匹配零个或多个任意字符；[abc]() 匹配任何一个列在方括号中的字符（这个例子要么匹配一个 a，要么匹配一个 b，要么匹配一个 c）；问号（?）只匹配一个任意字符；如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如 [0-9]() 表示匹配所有 0 到 9 的数字）。”
 > 摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 ex:
 	“# 此为注释 – 将被 Git 忽略
@@ -107,38 +107,38 @@ ex: `git mv README.txt README`　
 - `format`可以定制要显示的记录格式
 		git log --pretty=format:"%h-%an, %ar:%s"
 
-选项	 说明
-%H	提交对象（commit）的完整哈希字串
-%h	提交对象的简短哈希字串”
-%T	树对象（tree）的完整哈希字串
-%t	树对象的简短哈希字串
-%P	父对象（parent）的完整哈希字串
-%p	父对象的简短哈希字串
-%an	作者（author）的名字
-%ae	作者的电子邮件地址
-%ad	作者修订日期（可以用 -date= 选项定制格式）
-%ar	作者修订日期，按多久以前的方式显示
-%cn	提交者(committer)的名字
-%ce	提交者的电子邮件地址
-%cd	提交日期
-%cr	提交日期，按多久以前的方式显示
-%s	提交说明”
+选项   说明
+%H  提交对象（commit）的完整哈希字串
+%h  提交对象的简短哈希字串”
+%T  树对象（tree）的完整哈希字串
+%t  树对象的简短哈希字串
+%P  父对象（parent）的完整哈希字串
+%p  父对象的简短哈希字串
+%an 作者（author）的名字
+%ae 作者的电子邮件地址
+%ad 作者修订日期（可以用 -date= 选项定制格式）
+%ar 作者修订日期，按多久以前的方式显示
+%cn 提交者(committer)的名字
+%ce 提交者的电子邮件地址
+%cd 提交日期
+%cr 提交日期，按多久以前的方式显示
+%s  提交说明”
 
 - 结合`--graph`选项，可以看到开头多出一些ASCII字符串表示的简单图形。展示每个提交所在的分支及其分化衍合情况。
 		git log --pretty=format:"%h %s" --graph
 
-选项	说明
--p	按补丁格式显示每个更新之间的差异。
---word-diff	按 word diff 格式显示差异。
---stat	显示每次更新的文件修改统计信息。
---shortstat	只显示 --stat 中最后的行数修改添加移除统计。
---name-only	仅在提交信息后显示已修改的文件清单。
---name-status	显示新增、修改、删除的文件清单。
---abbrev-commit	仅显示 SHA-1 的前几个字符，而非所有的 40 个字符。
---relative-date	使用较短的相对时间显示（比如，“2 weeks ago”）。
---graph	显示 ASCII 图形表示的分支合并历史。
---pretty	使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。
---oneline	`--pretty=oneline --abbrev-commit` 的简化用法。
+选项  说明
+-p  按补丁格式显示每个更新之间的差异。
+--word-diff 按 word diff 格式显示差异。
+--stat  显示每次更新的文件修改统计信息。
+--shortstat 只显示 --stat 中最后的行数修改添加移除统计。
+--name-only 仅在提交信息后显示已修改的文件清单。
+--name-status   显示新增、修改、删除的文件清单。
+--abbrev-commit 仅显示 SHA-1 的前几个字符，而非所有的 40 个字符。
+--relative-date 使用较短的相对时间显示（比如，“2 weeks ago”）。
+--graph 显示 ASCII 图形表示的分支合并历史。
+--pretty    使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。
+--oneline   `--pretty=oneline --abbrev-commit` 的简化用法。
 
 ## 限制输出长度
 按时间限制,`--since`和`--until`选项
@@ -146,12 +146,12 @@ ex: `git mv README.txt README`　
 `--author`显示指定作者的提交，`--grep`选项搜索提交说明中的关键字。如果同事满足这两个条件搜索，必须用`--all-match`选项。
 
 另外一个适用的是路径(path)
-“选项	说明
--(n)	仅显示最近的 n 条提交”
---since, --after	仅显示指定时间之后的提交。
---until, --before	仅显示指定时间之前的提交。
---author	仅显示指定作者相关的提交。
---committer	仅显示指定提交者相关的提交。
+“选项   说明
+-(n)    仅显示最近的 n 条提交”
+--since, --after    仅显示指定时间之后的提交。
+--until, --before   仅显示指定时间之前的提交。
+--author    仅显示指定作者相关的提交。
+--committer 仅显示指定提交者相关的提交。
 
 ex:
 	git log --pretty="%h-%s" --author="Hivan Du" --since="2015-1-10" --before="2015-1-11" --no-merges -- add/
@@ -159,11 +159,52 @@ ex:
 ## 图形化工具
 	gitk
 
-## 撤销操作
+# 撤销操作
 ## 修改最后一次提交
 	git commit --amend
 
 ## 取消已经暂存的文件
 	git reset HEAD README.md
+
+## 取消对文件的修改
+	git checkout -- README.md
+
+> “记住，任何已经提交到 Git 的都可以被恢复。即便在已经删除的分支中的提交，或者用 --amend 重新改写的提交，都可以被恢复（关于数据恢复的内容见第九章）。所以，你可能失去的数据，仅限于没有提交过的，对 Git 来说它们就像从未存在过一样。”
+> 摘录来自: Andor Chen. “精通 Git”。 iBooks. 
+
+# 远程仓库的使用
+## 查看当前的远程库
+	git remote
+也可以加上`-v`(—verbose)，显示对应的克隆地址
+	git remote -v
+
+## 添加远程仓库
+	git remote add [shortname] [url]
+ex: `git remote add test git@gitcafe.com:hivandu/LearnGit.git`
+
+现在可以用字符串`test`纸袋对应的仓库地址了，比如说，要抓取所有的gitcafe有的，但是本地仓库没有的信息，可以运行`git fetch test`
+gitcafe上的主分支master已经完全可以在本地访问了，对应的名字是`test/master`，可以合并到自己的某个分支，或者切换到这个分支。
+
+## 从远程仓库抓取数据
+	git fetch [remote-name]
+
+如果clone了一个仓库，此命令会自动将远程仓库归于`origin`名下，所以，`git fetch origin`会抓取从你上次克隆以来别人上传到此仓库中的所有更新。**`fetch`命令只是将远端的数据拉到本地仓库，并不自动合并到当前工作分支，只有当确实准备好了，才能手工合并。**
+
+如果设置了某个分支用于跟踪某个远端仓库的分支，可以使用`git pull`自动抓取数据下来，然后将远端分支自动合并到本地仓库中的当前分支。
+
+一般我们运行`git pull`,目的都是要从原始克隆的远端仓库中抓取数据后，合并到工作目录中的当前分支。
+
+## 推送到远程仓库
+	git push [remote-name] [branch-name]
+ex : `git push origin master`
+
+## 查看远程仓库信息
+	git remote show [remote-name]
+ex: `git remote show origin`
+
+## 远程仓库的删除和重命名
+	git remote rename test paul
+	git remote rm paul
+	
 
 
