@@ -87,9 +87,72 @@ or `git commit -a -m "want change editor"`来跳过git add 步骤
 	`git rm --cached delfile.md`
 - 也可以使用`glob`模式
 	`git rm log/\*.log`
-- 　
 
+## 移动文件
+	git mv file_from file_to
+ex: `git mv README.txt README`　
 
+## 查看提交历史
+	git log
+- 用`-p`来显示每次提交的内容差异，用`-2`则显示最近两次更新
+		git log -p -2
+- 单词层面对比更容易观察，Git提供了`--word-diff`选项
+		git log -U1 --word-diff
+	进行单词比对的时候，可能希望context从默认3行，减为1行，那么可以使用`-U1`选项
+- 仅显示简要的增改行数统计
+		git log --stat
+- 指定使用完全不同默认格式的方式展示提交历史,用`--pretty`,比如用`oneline`将每个提交放在一行显示。
+		git log --pretty=oneline
+	另外还有`short`,`full`,`fuller`可以使用
+- `format`可以定制要显示的记录格式
+		git log --pretty=format:"%h-%an, %ar:%s"
 
-\`
+选项	 说明
+%H	提交对象（commit）的完整哈希字串
+%h	提交对象的简短哈希字串”
+%T	树对象（tree）的完整哈希字串
+%t	树对象的简短哈希字串
+%P	父对象（parent）的完整哈希字串
+%p	父对象的简短哈希字串
+%an	作者（author）的名字
+%ae	作者的电子邮件地址
+%ad	作者修订日期（可以用 -date= 选项定制格式）
+%ar	作者修订日期，按多久以前的方式显示
+%cn	提交者(committer)的名字
+%ce	提交者的电子邮件地址
+%cd	提交日期
+%cr	提交日期，按多久以前的方式显示
+%s	提交说明”
+
+- 结合`--graph`选项，可以看到开头多出一些ASCII字符串表示的简单图形。展示每个提交所在的分支及其分化衍合情况。
+		git log --pretty=format:"%h %s" --graph
+
+选项	说明
+-p	按补丁格式显示每个更新之间的差异。
+--word-diff	按 word diff 格式显示差异。
+--stat	显示每次更新的文件修改统计信息。
+--shortstat	只显示 --stat 中最后的行数修改添加移除统计。
+--name-only	仅在提交信息后显示已修改的文件清单。
+--name-status	显示新增、修改、删除的文件清单。
+--abbrev-commit	仅显示 SHA-1 的前几个字符，而非所有的 40 个字符。
+--relative-date	使用较短的相对时间显示（比如，“2 weeks ago”）。
+--graph	显示 ASCII 图形表示的分支合并历史。
+--pretty	使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。
+--oneline	`--pretty=oneline --abbrev-commit` 的简化用法。
+
+## 限制输出长度
+按时间限制,`--since`和`--until`选项
+	git log --since=2.weeks
+`--author`显示指定作者的提交，`--grep`选项搜索提交说明中的关键字。如果同事满足这两个条件搜索，必须用`--all-match`选项。
+
+另外一个适用的是路径(path)
+“选项	说明
+-(n)	仅显示最近的 n 条提交”
+--since, --after	仅显示指定时间之后的提交。
+--until, --before	仅显示指定时间之前的提交。
+--author	仅显示指定作者相关的提交。
+--committer	仅显示指定提交者相关的提交。
+
+ex:
+	git log --pretty="%h-%s" --author=gitster --since="2015-1-7" \ --before="2015-1-11" --no-merges -- add/
 
