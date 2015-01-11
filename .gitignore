@@ -14,6 +14,6 @@ doc/*.txt
 doc/**/*.txt
 
 .gitignore
-.plist
+.Ulysses-Group.plist
 
 # I want change somthing for "--amend"
