@@ -294,7 +294,7 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 新快照比较特殊，有两个祖先
 
 ### 遇到冲突时的分支合并
-
+	git mergetool
 文件比对工具: Kaleidoscopeapp
 Git 比对插件: [KSDIFF][3]
 
