@@ -32,15 +32,12 @@ puts "I change branch to master"
 
 puts 'I change branch to testing'
 
-class Testing
-  def testing(arg)
-    puts "I am here!"
-    puts "#{arg} is here"
+class Shitang
+  def setp1
+    puts "I am hungry"
   end
-  def classRoom
-    if 2 in 10
-      puts "Wawawaa!"
-    end
+  def setp2
+    puts "I want some food."
   end
 end
 
