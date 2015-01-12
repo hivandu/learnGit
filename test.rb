@@ -32,20 +32,11 @@ puts "I change branch to master"
 
 puts 'I change branch to testing'
 
-class Testing
-  def testing(arg)
-    puts "I am here!"
-    puts "#{arg} is here"
+class Senlin
+  def setp1
+    puts "I am back"
   end
-  def classRoom
-    if 2 in 10
-      puts "Wawawaa!"
-    end
-  end
-end
-
-class Testing2
-  def testing2(arg2)
-    puts "#{arg2} at here"
+  def setp2
+    puts "I want fvck u."
   end
 end
