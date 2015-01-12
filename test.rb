@@ -55,5 +55,3 @@ class WordIndex
     @index[word.downcase]
   end
 end
-
-
