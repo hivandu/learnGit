@@ -33,5 +33,21 @@ puts "I change branch to master"
 puts 'I change branch to testing'
 
 
+<<<<<<< HEAD
 class Song
+=======
+class Button
+  def initialize(label)
+  end
+end
+
+class WordIndex
+  def initialize
+    @index = {}
+  end
+
+  def lookup(word)
+    @index[word.downcase]
+  end
+>>>>>>> testing
 end
