@@ -32,3 +32,9 @@ puts "I change branch to master"
 
 puts 'I change branch to testing'
 
+
+class  Song
+  def method_name
+    puts "Some test"
+  end
+end
