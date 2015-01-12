@@ -274,4 +274,7 @@ Git中的分支，其实本质上仅仅是指向commit对象的可变指针。
 	git breanch testing
 
 git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本地分支的指针(将HEAD想象为当前分支的别名)。
+**切换分支**
+	git checkout testing
+这样HEAD指针就指向了`testing`
 
