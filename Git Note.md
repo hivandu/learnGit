@@ -274,24 +274,24 @@ Git中的分支，其实本质上仅仅是指向commit对象的可变指针。
 	git breanch testing
 
 git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本地分支的指针(将HEAD想象为当前分支的别名)。
-<<<<<<< HEAD
-\<\<\<\<\<\<\< HEAD
 **切换分支**
 	git checkout testing
+这样HEAD指针就指向了`testing`
 ## 分支的新建与合并
 ### 分支的新建与切换
-=======
-
-
-
 	git checkout -b iss53
 相当于:
 	git branch iss53
 	git checkout iss53
-> > > > > > > iss53
-=======
-**切换分支**
-	git checkout testing
-这样HEAD指针就指向了`testing`
->>>>>>> testing
+提示`Fast-forward` ，由于当前mster所在提交是要并入hotfix分支的直接上游，Git只需要把master分支指针直接右移。如果顺着一个分支走下去可以到达另一个分支的话，那么Git合并两者，值会简单的右移指针。
+
+**删除分支:**
+	git branch -d hotfix
+
+### 分支的合并
+	git merge
+这次Git是将两个分支的末端以及他们的共同祖先进行一次简单的三方合并计算，这次没有简单的指针右移，而是对三方合并后的结果重新做一个新的快照。
+新快照比较特殊，有两个祖先
+
+### 遇到冲突时的分支合并
 
