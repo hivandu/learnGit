@@ -44,11 +44,8 @@ class Testing
   end
 end
 
-<<<<<<< HEAD
 class Testing2
   def testing2(arg2)
     puts "#{arg2} at here"
   end
 end
-=======
->>>>>>> testing
