@@ -302,6 +302,12 @@ post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
 
 
 ## 分支的管理
+查看分支清单: `git branch`
+查看各个分支最后一个提交对象的信息: `git branch -v`
+筛选已经（尚未）与当前分支合并的分支`--merged`和`--no-merged`
+
+	git branch -d testing 
+如果testing还没有合并，会提示错误，但是如果想强制执行，使用`-D`
 
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
