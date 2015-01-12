@@ -1,4 +1,5 @@
 
+# Git 基础
 ## 文本编辑器
 `git config —global core.editor sm`
 
@@ -239,7 +240,34 @@ ex: `git push origin v1.0`
 或一次推送所有标签
 	git push origin --tags
 
+## 技巧和窍门
+### 自动补全
+如果你用的是 Bash shell，可以试试看 Git 提供的自动补全脚本。下载 Git 的源代码，进入 contrib/completion 目录，会看到一个 git-completion.bash 文件。将此文件复制到你自己的用户主目录中（译注：按照下面的示例，还应改名加上点：`cp git-completion.bash ~/.git-completion.bash）`，并把下面一行内容添加到你的 .bashrc 文件中：
+	source ~/.git-completion.bash
+“也可以为系统上所有用户都设置默认使用此脚本。Mac 上将此脚本复制到 `/opt/local/etc/bash_completion.d` 目录中，Linux 上则复制到 `/etc/bash_completion.d/` 目录中。这两处目录中的脚本，都会在 Bash 启动时自动加载。”
+“在输入 Git 命令的时候可以敲两次跳格键（Tab），就会看到列出所有匹配的可用命令建议：”
+	git co<tab><tab>
+	commit config
+摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 
+## Git 命令别名
+	git config --global alias.co checkout
+	git config --global alias.br branch
+	git config --global alias.ci commit
+	git config --global alias.st status
 
+比如取消暂存文件的输入:
+	git config --global alias.unstage 'reset HEAD --'
+last命令:
+	git config --global alias.last 'log -1 HEAD'
+查看最后一次提交，就变得简单多了:
+	git last
+如果是外部命令，而非Git子命令，可以在命令前加上`!`就行
+	git config --global alias.visual '!gitk'
 
+# Git分支
+## 何谓分支
+Git暂存参佐会对每一个文件计算校验和（SHA-1哈希字串），然后把当前版本的文件快照保存到Git仓库中（Git使用blob类型的对象存储这些快照），并将校验和加入暂存区域。
+`git commit` 新建一个提交对象前，Git会先计算每一个子目录的校验和，然后在Git仓库中将这些目录保存为树对象。之后Git创建的提交对象，除了保存相关信息以外，还包含着指向这个树对象的指针，如此它就可以在将来需要的时候，重现此次快照的内容了。
+![git_tree]()(images/git_tree.jpg)
 
