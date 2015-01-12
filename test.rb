@@ -28,16 +28,19 @@ print <<-STRING1, <<-STRING2
     enate
     STRING2
 
-<<<<<<< HEAD
 puts "I change branch to master"
-=======
 
 puts 'I change branch to testing'
->>>>>>> testing
 
 class Testing
   def testing(arg)
     puts "I am here!"
     puts "#{arg} is here"
   end
+  def classRoom
+    if 2 in 10
+      puts "Wawawaa!"
+    end
+  end
 end
+
