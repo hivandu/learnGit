@@ -31,3 +31,17 @@ print <<-STRING1, <<-STRING2
 puts "I change branch to master"
 
 puts 'I change branch to testing'
+
+
+class Song
+  include Comparable
+  @@plays = 0
+  attr_reader :name, :artist, :duration
+  attr_writer :duration
+  def initialize(name, artist, duration)
+    @name = name
+    @artist = artist
+    @duration = duration
+    @plays = 0
+  end
+end
