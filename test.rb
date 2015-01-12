@@ -33,9 +33,9 @@ puts "I change branch to master"
 puts 'I change branch to testing'
 
 
-<<<<<<< HEAD
 class Song
-=======
+end
+
 class Button
   def initialize(label)
   end
@@ -49,5 +49,4 @@ class WordIndex
   def lookup(word)
     @index[word.downcase]
   end
->>>>>>> testing
 end
