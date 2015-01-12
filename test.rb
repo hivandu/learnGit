@@ -38,3 +38,9 @@ class  Song
     puts "Some test"
   end
 end
+
+class Iss53
+  def method_iss53
+    puts "This is iss53"
+  end
+end
