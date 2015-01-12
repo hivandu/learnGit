@@ -326,7 +326,7 @@ post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
 ### 推送本地分支
 如果有一个叫`serverfix`的分支需要和他人一起开发，可以运行`git push (远程仓库名)(分支名)`
 	git push origin serverfix
-
+	
 	git push origin serverfix:awesomebranch
 通过这个语法，可以把本地分支推送到某个命名不同的远程分支，如远程分支叫`awesomebranch`
 
@@ -348,9 +348,13 @@ git 1.6.2以上版本，可以用`--track`简化
 	git checkout --track origin/serverfix
 
 ### 删除远程分支
+	git push origin :serverfix
 
 
+## 分支的衍合
+分支整合有两个办法:`merge` and `rebase`(衍合)。
 
+### 基本的衍合操作
 
 
 
