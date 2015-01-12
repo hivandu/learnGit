@@ -36,7 +36,8 @@ puts 'I change branch to testing'
 >>>>>>> testing
 
 class Testing
-  def testing2(arg2)
-    puts "#{arg2} at here"
+  def testing(arg)
+    puts "I am here!"
+    puts "#{arg} is here"
   end
 end
