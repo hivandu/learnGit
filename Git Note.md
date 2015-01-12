@@ -409,11 +409,26 @@ or
 	git clone http://example.com/gitproject.git
 
 ## 服务器上部署Git
-**部署Git的内容，容后在学** — page:147
 架设Git服务器前，先要把现有仓库导出为裸仓库
 克隆时使用`--bare`选项
 	git clone --bare my_project my_project.gits
-	
+`git clone`相当于 `git init`+`git fetch`
+整体效果大致相当于:
+	cp -Rf my_project/.git my_project.git
+
+### 把裸仓库移动到服务器上
+有了裸仓库的副本后，剩下的就是把它放到服务器上并设定相关协议。
+	scp -r my_project.git user@git.example.com:/opt/git
+现在，所有对该服务器有SSH访问权限，并可读取`/opt/git`目录的用户都可以用下面的命令克隆该项目:
+	git clone user@git.example.com:/opt/git/my_project.git
+
+设置组权限可写:
+	ssh user@git.example.com
+	cd /opt/git/my_project.git
+	git init --bare --shared
+
+### 小型安装
+**部署Git的其他内容，容后在学** — page:149
 
 
 
