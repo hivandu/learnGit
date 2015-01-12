@@ -295,3 +295,10 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 ### 遇到冲突时的分支合并
 
+文件比对工具: Kaleidoscopeapp
+Git 比对插件: [KSDIFF][3]
+
+post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
+
+[3]:	http://www.kaleidoscopeapp.com/ksdiff
+[4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/

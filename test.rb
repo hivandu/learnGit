@@ -33,13 +33,22 @@ puts "I change branch to master"
 puts 'I change branch to testing'
 
 class Testing
-  def testing2(arg2)
-    puts "#{arg2} at here"
+  def testing(arg)
+    puts "I am here!"
+    puts "#{arg} is here"
+  end
+  def classRoom
+    if 2 in 10
+      puts "Wawawaa!"
+    end
   end
 end
 
+<<<<<<< HEAD
 class Testing2
   def testing2(arg2)
     puts "#{arg2} at here"
   end
 end
+=======
+>>>>>>> testing
