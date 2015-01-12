@@ -287,6 +287,7 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 **删除分支:**
 	git branch -d hotfix
+![git\_tree]()(images/git\_tree.jpg)
 
 ### 分支的合并
 	git merge
@@ -376,3 +377,4 @@ git 1.6.2以上版本，可以用`--track`简化
 
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
+
