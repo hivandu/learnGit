@@ -396,6 +396,7 @@ or
 
 
 
+
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
 
