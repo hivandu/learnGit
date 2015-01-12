@@ -269,7 +269,7 @@ last命令:
 ## 何谓分支
 Git暂存参佐会对每一个文件计算校验和（SHA-1哈希字串），然后把当前版本的文件快照保存到Git仓库中（Git使用blob类型的对象存储这些快照），并将校验和加入暂存区域。
 `git commit` 新建一个提交对象前，Git会先计算每一个子目录的校验和，然后在Git仓库中将这些目录保存为树对象。之后Git创建的提交对象，除了保存相关信息以外，还包含着指向这个树对象的指针，如此它就可以在将来需要的时候，重现此次快照的内容了。
-<<<<<<< HEAD
+\<\<\<\<\<\<\< HEAD
 Git中的分支，其实本质上仅仅是指向commit对象的可变指针。
 **创建一个新的分支**
 	git breanch testing
@@ -288,13 +288,13 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 **删除分支:**
 	git branch -d hotfix
-<<<<<<< HEAD
+\<\<\<\<\<\<\< HEAD
 =======
-![git_tree](images/git_tree.jpg)
->>>>>>> refs/remotes/origin/master
+![git\_tree][image-1]
+> > > > > > > refs/remotes/origin/master
 =======
 ![git\_tree]()(images/git\_tree.jpg)
->>>>>>> 7a2a71b
+> > > > > > > 7a2a71b
 
 ### 分支的合并
 	git merge
@@ -388,6 +388,38 @@ or
 要添加一个本地仓库作为现有Git项目的远程仓库，可以这样
 	git remote add local_proj /opt/git/project.git
 
+### SSH 协议
+SSH是唯一一个同时支持读写操作的网络协议，同时也是一个验证授权的网络协议;
+	git clone ssh://user@server/project.git
+or
+	git clone user@server:project.git
+
+### Git协议
+打算支持Git协议的仓库，需要先创建`git-daemon-export-ok`文件
+
+### HTTP/S 协议
+下面操作允许通过HTTP对仓库进行读取:
+	$ cd /var/www/htdocs
+	$ git clone --bare /path/to/git_project
+	git project.git
+	$ cd gitproject.git
+	$ mv hooks/post-update.sample hooks/post-update
+	$ chmod a+x hooks/post-update
+之后:
+	git clone http://example.com/gitproject.git
+
+## 服务器上部署Git
+**部署Git的内容，容后在学** — page:147
+架设Git服务器前，先要把现有仓库导出为裸仓库
+克隆时使用`--bare`选项
+	git clone --bare my_project my_project.gits
+	
+
+
+
+
+
+
 
 
 
@@ -407,3 +439,4 @@ or
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
 
+[image-1]:	images/git_tree.jpg
