@@ -358,7 +358,28 @@ git 1.6.2以上版本，可以用`--track`简化
 ### 基本的衍合操作
 `rebase`命令，是把一个分支里的提交改变移动到另一个分支里重放一遍。
 
+### 有趣的衍合
+	git rebase --onto master server client
+这好比在说：“取出 client 分支，找出 client 分支和 server 分支的共同祖先之后的变化，然后把它们在 master 上重演一遍”.
 
+### 衍合的风险
+“一旦分支中的提交对象发布到公共仓库，就千万不要对该分支进行衍合操作”
+
+如果把衍合当成一种在推送之前清理提交历史的手段，而且仅仅衍合那些尚未公开的提交对象，就没问题。如果衍合那些已经公开的提交对象，并且已经有人基于这些提交对象开展了后续开发工作的话，就会出现叫人沮丧的麻烦。
+
+# 服务器上的Git
+## 协议
+四种: 本地传输， SSH协议， Git协议和HTTP协议
+除了HTTP协议，其他协议都要求服务器端安装并运行Git。
+
+### 本地协议
+**Local Protocol**
+	git clone /opt/git/project.git
+or
+	git clone file:///opt/git/project.git
+`file://`路径，Git会调用它平时通过网络来传输数据的供需，效率较低。原因是当你需要一个不包含无关引用或对象的干净仓库副本的时候。
+要添加一个本地仓库作为现有Git项目的远程仓库，可以这样
+	git remote add local_proj /opt/git/project.git
 
 
 
