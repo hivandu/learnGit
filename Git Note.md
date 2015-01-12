@@ -277,4 +277,8 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 
 
+	git checkout -b iss53
+相当于:
+	git branch iss53
+	git checkout iss53
 
