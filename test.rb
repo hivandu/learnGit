@@ -32,20 +32,26 @@ puts "I change branch to master"
 
 puts 'I change branch to testing'
 
-<<<<<<< HEAD
-class Senlin
-  def setp1
-    puts "I am back"
+
+class Button
+  def initialize(label)
   end
-  def setp2
-    puts "I want fvck u."
-=======
-class Shitang
-  def setp1
-    puts "I am hungry"
+end
+
+class WordIndex
+  def initialize
+    @index = {}
   end
-  def setp2
-    puts "I want some food."
->>>>>>> testing
+  def add_to_index(obj, *phrases)
+    phrases.each do |phrase|
+      phrase.scan(/w[-\w']+/) do |word|
+        word.downcase!
+        @index[word] = [] if @index[word].nil?
+        @index[word].push(obj)
+      end
+    end
+  end
+  def lookup(word)
+    @index[word.downcase]
   end
 end
