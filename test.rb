@@ -34,3 +34,10 @@ puts "I change branch to master"
 
 puts 'I change branch to testing'
 >>>>>>> testing
+
+class Testing
+  def testing(arg)
+    puts "I am here!"
+    puts "#{arg} is here"
+  end
+end
