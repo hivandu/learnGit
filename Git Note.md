@@ -309,5 +309,65 @@ post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
 	git branch -d testing 
 如果testing还没有合并，会提示错误，但是如果想强制执行，使用`-D`
 
+## 利用分支进行开发的工作流程
+### 长期分支
+比如,`master`储存稳定代码，还有一个名为`develop`或`next`的平行分支，专门用于后续开发，或仅用于稳定性测试。一旦稳定了，便可以把它合并到`master`里。
+
+某些大型项目含有`proposed`(建议)， `pu`(proposed updates, 建议更新)分支。
+
+### 特性分支
+`Topic`分支。一个特性分支是指一个短期的，用来实现单一特性或与其相关工作的分支。
+
+### 远程分支
+我们用(远程仓库名)/(分支名)这样的形式来表示远程分支。
+可以运行`git fetch origin`来同步远程服务器上的数据到本地
+	git remote add teamone git://git.team1.ourcompany.com/
+
+### 推送本地分支
+如果有一个叫`serverfix`的分支需要和他人一起开发，可以运行`git push (远程仓库名)(分支名)`
+	git push origin serverfix
+
+	git push origin serverfix:awesomebranch
+通过这个语法，可以把本地分支推送到某个命名不同的远程分支，如远程分支叫`awesomebranch`
+
+`fetch`下载好新的远程分支，仍然无法编辑该远程仓库中的分支。
+
+合并到当前分支
+	git merge origin/serverfix
+
+分化一个新的分支:
+	git checkout -b serverfix origin/serverfix
+
+### 跟踪远程分支
+远程分支checkout出来的本地分支，称为`tracking branch`（跟踪分支）。
+`git push`会自省推断向那个服务器的哪个分支推送数据
+`git pull`会获取所有远程索引，并合并到本地
+
+	git checkout -b [分支名][远程名]/[分支名]
+git 1.6.2以上版本，可以用`--track`简化
+	git checkout --track origin/serverfix
+
+### 删除远程分支
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
