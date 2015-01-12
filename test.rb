@@ -31,7 +31,6 @@ print <<-STRING1, <<-STRING2
 puts "I change branch to master"
 
 puts 'I change branch to testing'
-
 class Song
   include Comparable
   @@plays = 0
@@ -42,5 +41,28 @@ class Song
     @artist = artist
     @duration = duration
     @plays = 0
+  end
+end
+
+class Button
+  def initialize(label)
+  end
+end
+
+class WordIndex
+  def initialize
+    @index = {}
+  end
+  def add_to_index(obj, *phrases)
+    phrases.each do |phrase|
+      phrase.scan(/w[-\w']+/) do |word|
+        word.downcase!
+        @index[word] = [] if @index[word].nil?
+        @index[word].push(obj)
+      end
+    end
+  end
+  def lookup(word)
+    @index[word.downcase]
   end
 end
