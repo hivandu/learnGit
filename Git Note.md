@@ -300,5 +300,8 @@ Git 比对插件: [KSDIFF][3]
 
 post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
 
+
+## 分支的管理
+
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
