@@ -27,3 +27,5 @@ print <<-STRING1, <<-STRING2
   STRING1
     enate
     STRING2
+
+puts "I change branch to master"
