@@ -28,9 +28,6 @@ print <<-STRING1, <<-STRING2
     enate
     STRING2
 
-<<<<<<< HEAD
 puts "I change branch to master"
-=======
 
 puts 'I change branch to testing'
->>>>>>> testing
