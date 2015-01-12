@@ -32,11 +32,20 @@ puts "I change branch to master"
 
 puts 'I change branch to testing'
 
+<<<<<<< HEAD
 class Senlin
   def setp1
     puts "I am back"
   end
   def setp2
     puts "I want fvck u."
+=======
+class Shitang
+  def setp1
+    puts "I am hungry"
+  end
+  def setp2
+    puts "I want some food."
+>>>>>>> testing
   end
 end
