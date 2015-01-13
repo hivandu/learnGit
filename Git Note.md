@@ -269,7 +269,6 @@ last命令:
 ## 何谓分支
 Git暂存参佐会对每一个文件计算校验和（SHA-1哈希字串），然后把当前版本的文件快照保存到Git仓库中（Git使用blob类型的对象存储这些快照），并将校验和加入暂存区域。
 `git commit` 新建一个提交对象前，Git会先计算每一个子目录的校验和，然后在Git仓库中将这些目录保存为树对象。之后Git创建的提交对象，除了保存相关信息以外，还包含着指向这个树对象的指针，如此它就可以在将来需要的时候，重现此次快照的内容了。
-\<\<\<\<\<\<\< HEAD
 Git中的分支，其实本质上仅仅是指向commit对象的可变指针。
 **创建一个新的分支**
 	git breanch testing
@@ -288,13 +287,7 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 **删除分支:**
 	git branch -d hotfix
-\<\<\<\<\<\<\< HEAD
-=======
 ![git\_tree][image-1]
-> > > > > > > refs/remotes/origin/master
-=======
-![git\_tree]()(images/git\_tree.jpg)
-> > > > > > > 7a2a71b
 
 ### 分支的合并
 	git merge
@@ -430,8 +423,87 @@ or
 ### 小型安装
 **部署Git的其他内容，容后在学** — page:149
 
+## 生成SSH公钥
+	ssh-keygen
+Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-key][5]
 
+	cat id_rsa.pub
+## 架设服务器
+…
+## 公共访问
 
+## GitWeb
+
+## Gitosis
+
+## Gitolite
+### 安装
+### 定制安装
+### 配置文件和访问规则
+
+## Git守护进程
+## Git 托管服务
+Git最新的托管服务列表: [https://git.wiki.kernel.org/index.php/GitHosting][6]
+### Github
+### 从Subversion导入项目
+### 添加协作开发者
+### 派生项目
+
+# 分布式Git
+## 分布式工作流程
+### 集中式工作流
+第一个开发者可以顺利的把数据推送到服务器，而第二个开发者在提交修订之前，必须先下载合并服务器上的数据，解决冲突之后才能推送数据到共享服务器上。这就好比是在用Subversion（或其他CVCS）一样。
+在有冲突时，Git根本不会让用户覆盖他人代码，它直接驳回第二个人的提交操作。
+
+### 集成管理员工作流
+1. 项目未护着可以推送数据到公共仓库blessed repository
+2. 贡献者克隆此仓库，修订或编写新代码
+3. 贡献者推送数据到自己的公共仓库developer public
+4. 贡献者给维护者发送邮件，请求拉去自己的最新修订。
+5. 未护着在自己的本地的integration manger仓库中，将贡献者的仓库加为远程仓库，合并更新并做测试。
+6. 未护着将合并后的更新推送到主仓库blessed repository
+
+### 司令官和副官工作流
+1. 一般的开发者在自己的特性分支上工作，并不定期地根据主干分支（dictator 上的 master）衍合。
+2. 副官（lieutenant）将普通开发者的特性分支合并到自己的 master 分支中。
+3. 司令官（dictator）将所有副官的 master 分支并入自己的 master 分支。
+4. 司令官（dictator）将集成后的 master 分支推送到共享仓库 blessed repository 中，以便所有其他开发者以此为基础进行衍合。
+
+## 为项目做贡献
+### 提交指南
+Git项目本身提供了一份文档(Git项目源代码目录中Documentation/SubmittingPatches)。
+
+- “首先，请不要在更新中提交多余的白字符（whitespace）。Git 有种检查此类问题的方法，在提交之前，先运行 git diff --check，会把可能的多余白字符修正列出来。下面的示例，我已经把终端中显示为红色的白字符用 X 替换掉：”
+- “接下来，请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。如果针对两个问题改动的是同一个文件，可以试试看`git add --patch`的方式将部分内容置入暂存区域。
+- “最后需要谨记的是提交说明的撰写。写得好可以让大家协作起来更轻松。一般来说，提交说明最好限制在一行以内，50 个字符以下，简明扼要地描述更新内容，空开一行后，再展开详细注解。”
+
+来自tpope.net的Time Pope的提交说明格式模板:
+> 本次更新的简要描述（50 个字符以内）
+
+> 如果必要，此处展开详尽阐述。段落宽度限定在 72 个字符以内。
+> 某些情况下，第一行的简要描述将用作邮件标题，其余部分作为邮件正文。
+> 其间的空行是必要的，以区分两者（当然没有正文另当别论）。
+> 如果并在一起，rebase 这样的工具就可能会迷惑。
+> 
+> 另起空行后，再进一步补充其他说明。
+> 
+> - 可以使用这样的条目列举式。
+> 
+> - 一般以单个空格紧跟短划线或者星号作为每项条目的起始符。每个条目间用一空行隔开。
+>   不过这里按自己项目的约定，可以略作变化。”
+> **摘录来自: Andor Chen. “精通 Git”。 iBooks. **
+
+强烈建议去git项目仓库下运行`git log --no-merges`看看。
+
+### 私有小型团队
+### 私有团队间协作
+### 公开的小型项目
+	git clone [url]
+	cd project
+	git checkout -b featureA
+### 公开的大型项目
+
+## 项目的管理
 
 
 
@@ -453,5 +525,7 @@ or
 
 [3]:	http://www.kaleidoscopeapp.com/ksdiff
 [4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
+[5]:	http://github.com/guides/providing-your-ssh-key
+[6]:	https://git.wiki.kernel.org/index.php/GitHosting
 
 [image-1]:	images/git_tree.jpg
