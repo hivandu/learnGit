@@ -287,6 +287,7 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 **删除分支:**
 	git branch -d hotfix
+
 ![git\_tree][image-1]
 
 ### 分支的合并
