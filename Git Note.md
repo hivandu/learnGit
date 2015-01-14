@@ -556,7 +556,12 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 对于`format-patch`制作的新补丁，应该用`git am`。
 	git am 0001-limit-log-function.patch
 
-
+有时候Git会在有冲突的文件里加入冲突解决标记，这与合并或衍合操作一样。解决办法也一样，先编辑文件消除冲突，然后暂存，最后运行`git aam --resolved`提交修正结果:
+	[fix the file]
+	git add ticgit.gemspec
+	git am --resolved
+	Applying: seeing if this helps the gem
+如果想让Git更只能的处理冲突，可以用`-3`选项进行三方合并。
 
 
 
