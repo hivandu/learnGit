@@ -523,6 +523,7 @@ Git项目本身提供了一份文档(Git项目源代码目录中Documentation/Su
 ### 公开的大型项目
 可以用`git farmat-patch`来生成`mbox`格式的文件然后作为附件发送。
 每个提交都会封装为一个`.patch`后缀的`mbox`文件，其中只包含一封邮件，邮件标题就是提交消息，邮件内偶然那个包含补丁正文和Git版本号。
+	git format-patch -M origin/master
 
 Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有一个Documentation/SubmittingPatches文件，可以仔细读读，看看其他邮件程序的相关引导。
 
