@@ -641,7 +641,13 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 如果要发布zip压缩包
 	git archive master --prefix='project/' --format=zip > `git describe master`.zip
 
+### 制作简报
+使用`git shortlog`可以方便快捷的制作一份修改日志.
+加入你上次发布的版本是v1.0.1，下面的命令将给出自从上次发布之后的所有提交的简介
+	git shortlog --no-merges master --not v1.0.1
 
+
+# Git 工具
 
 
 
