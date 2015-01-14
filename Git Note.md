@@ -503,10 +503,11 @@ Git项目本身提供了一份文档(Git项目源代码目录中Documentation/Su
 	cd project
 	git checkout -b featureA
 ### 公开的大型项目
-
+可以用`git farmat-patch`来生成`mbox`格式的文件然后作为附件发送。
+每个提交都会封装为一个`.patch`后缀的`mbox`文件，
 ## 项目的管理
 
-
+### 使用特性分支进行工作
 
 
 
