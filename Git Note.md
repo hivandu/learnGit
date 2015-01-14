@@ -649,8 +649,77 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 
 # Git 工具
 
+## 修订版本(Revision)选择
+### 单个修订版本
+### 简短的SHA
+	git show 1c002dd4b536e7479fe34593e72e6c6c1819e53b
+	git show 1c002dd4b536e7479f
+	git show 1c002dd
 
+Git 可以为你的SHA-1值生成出简短且唯一的缩写。如果你传递`--abbrev-commit`给`git log`，输出结果里就会使用简短且唯一的值
+	git log --abbrev-commit --pretty=oneline
 
+### 关于SHA-1的简短说明
+
+### 分支引用
+如果topic1分支指向ca82a6d,下面等价:
+	git show ca82a6d
+	git show topic1
+
+`rev-parse`，探测工具，可以查看一个例子中被间歇的SHA-1,或者某个分支指向哪个特定的SHA.
+	git rev-parse topic1
+
+### 引用日志里的简称
+	git reflog
+如果想查看HEAD在五次前的值，可以引用日志的输出中的`@{n}`引用
+	git show HEAD@{5}
+也可以查看某个分支在一定时间前的位置
+	git show master@{yesterday}
+想查看`git log`输出格式的引用日志信息:
+	git log -g master
+引用日志信息值存于本地
+
+### 祖先引用
+可以使用`^`
+	git show HEAD^
+	git show d921970^2
+
+另外一个指明祖先提交的方法是`~`
+`git show HEAD~3`也可以写成`git show HEAD^^^`
+
+### 提交范围
+#### 双点
+要看看实验分支那些没有被提交到主分支，可以使用`master..experiment`
+	git log master..experiment
+相反的，可以交换提交名字。
+这个语法的另一种常见也哦哦那个吐是查看你将把什么推送到远程:
+	git log origin/master..HEAD
+这条命令显示任何在你当前分支上而不在远程origin上的提交。
+也可以留空一边，让Git来假定它是HEAD
+	git log origin/master..
+
+#### 多点
+以下等他
+	git log refA..refB
+	git log ^refA refB
+	git log refB --not refA
+
+加入想查找从`refA`或`refB`包含的但是不被`refC`包含的提交，可以输入下面中的一个:
+	git log refA refB ^refC
+	git log refA refB --not refC
+
+#### 三点
+	git log master...experiment
+
+log命令的一个常用参数是`--left-right`，会显示每个提交到底处于那一侧的分支。这使得数据更加有用
+	git log --left-right master...experiment
+
+### 交互式暂存
+运行`git add`时加上`-i`或者`--interactive`，Git就会进入了一个交互式的`shell`模式:
+	git add -i
+
+### 暂存和撤回文件
+如果在`what now>`的提示后输入2或者u,这个脚本会提示你那些文件你想要储存:
 
 
 
