@@ -1,24 +1,35 @@
 
 # Git 基础
-## 文本编辑器
+## 初次运行Git前的配置
+`git config`
+有三个地方存放这些变量
+- `/ect/gitconfig` 对所有用户普遍适用 ，`git config --system`读写的就是这个文件
+- `~/.gitconfig`用户目录，只适用于当前用户。`git config --global`读写的是这个
+- `wordspace/.git/config`当前项目有效，编辑`workspace/.git/config`会覆盖`/etc/gitconfig`中的同名变量
+### 用户信息
+	git config --global user.name "Hivan Du"
+	git config --global user.email "doo@hivan.me"
+
+### 文本编辑器
 `git config —global core.editor sm`
 
-## 差异分析工具
+### 差异分析工具
 `git config —global merge.tool vimdiff`
 “Git 可以理解 kdiff3，tkdiff，meld，xxdiff，emerge，vimdiff，gvimdiff，ecmerge，和 opendiff 等合并工具的输出信息。”
 
-## 查看配置信息
+### 查看配置信息
 `git config —list`
 ex: `git config user.name`
 
-# 取得项目的Git仓库
-## 初始化新仓库
+# Git 基础
+## 取得项目的Git仓库
+### 初始化新仓库
 	git init
 	git add *.c
 	git add README
 	git commit -m 'initial project version'
 
-## 克隆现有仓库
+### 克隆现有仓库
 	git clone git://github.com/xxxxx/xxx.git
 	git clone git://github.com/xxxxx/xxx.git xxxx.git
 
@@ -27,18 +38,18 @@ ex: `git config user.name`
 - unmodified
 - modified
 - staged
-## 检查当前文件状态
+### 检查当前文件状态
 	git status
 
-## 跟踪新文件
+### 跟踪新文件
 	git add README
 
-## 暂存已修改文件
+### 暂存已修改文件
 	git add xxxxxx.md
 > “译注：其实 git add 的潜台词就是把目标文件快照放入暂存区域，也就是 add file into staged area，同时未曾跟踪过的文件标记为需要跟踪。这样就好理解后续 add 操作的实际意义了。”
 > 摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 
-## 忽略某些文件
+### 忽略某些文件
 	cat .gitignore
 需要修改`.gitignore`，
 规范格式如下:
@@ -49,7 +60,7 @@ ex: `git config user.name`
 > “所谓的 glob 模式是指 shell 所使用的简化了的正则表达式。星号（\*）匹配零个或多个任意字符；[abc]() 匹配任何一个列在方括号中的字符（这个例子要么匹配一个 a，要么匹配一个 b，要么匹配一个 c）；问号（?）只匹配一个任意字符；如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如 [0-9]() 表示匹配所有 0 到 9 的数字）。”
 > 摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 ex:
-	“# 此为注释 – 将被 Git 忽略
+	# 此为注释 – 将被 Git 忽略
 	# 忽略所有 .a 结尾的文件
 	*.a
 	# 但 lib.a 除外
@@ -61,10 +72,10 @@ ex:
 	# 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt
 	doc/*.txt
 	# ignore all .txt files in the doc/ directory
-	doc/**/*.txt”
+	doc/**/*.txt
 >  摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 
-## 查看已经暂存和未暂存的更新
+### 查看已经暂存和未暂存的更新
 	git status
 
 查看尚未暂存的文件更新哪些部分，不加参数直接输入`git diff`
@@ -73,13 +84,15 @@ ex:
 查看已经暂存的文件和上次提交的快照之间的差异:
 	git diff --cached(--staged)
 
-## 提交更新
+### 提交更新
 	git commit
 一半都是`VIM`，可以更改默认editor
 或者直接参加参数`git commit -m "want change editor"`
 or `git commit -a -m "want change editor"`来跳过git add 步骤
+### 跳过适用暂存区域
+	git commit -a -m 'added new benchmarks'
 
-## 移除文件
+### 移除文件
 - 从文件目录中删除
 	`git rm delfile.md`
 - 从仓库删除（亦从暂存区域删除）
@@ -87,7 +100,7 @@ or `git commit -a -m "want change editor"`来跳过git add 步骤
 - 也可以使用`glob`模式
 	`git rm log/\*.log`
 
-## 移动文件
+### 移动文件
 	git mv file_from file_to
 ex: `git mv README.txt README`　
 
@@ -139,7 +152,7 @@ ex: `git mv README.txt README`　
 --pretty    使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。
 --oneline   `--pretty=oneline --abbrev-commit` 的简化用法。
 
-## 限制输出长度
+### 限制输出长度
 按时间限制,`--since`和`--until`选项
 	git log --since=2.weeks
 `--author`显示指定作者的提交，`--grep`选项搜索提交说明中的关键字。如果同事满足这两个条件搜索，必须用`--all-match`选项。
@@ -155,36 +168,36 @@ ex: `git mv README.txt README`　
 ex:
 	git log --pretty="%h-%s" --author="Hivan Du" --since="2015-1-10" --before="2015-1-11" --no-merges -- add/
 
-## 图形化工具
+### 图形化工具
 	gitk
 
-# 撤销操作
-## 修改最后一次提交
+## 撤销操作
+### 修改最后一次提交
 	git commit --amend
 
-## 取消已经暂存的文件
+### 取消已经暂存的文件
 	git reset HEAD README.md
 
-## 取消对文件的修改
+### 取消对文件的修改
 	git checkout -- README.md
 
 > “记住，任何已经提交到 Git 的都可以被恢复。即便在已经删除的分支中的提交，或者用 --amend 重新改写的提交，都可以被恢复（关于数据恢复的内容见第九章）。所以，你可能失去的数据，仅限于没有提交过的，对 Git 来说它们就像从未存在过一样。”
 > 摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 
-# 远程仓库的使用
-## 查看当前的远程库
+## 远程仓库的使用
+### 查看当前的远程库
 	git remote
 也可以加上`-v`(—verbose)，显示对应的克隆地址
 	git remote -v
 
-## 添加远程仓库
+### 添加远程仓库
 	git remote add [shortname] [url]
 ex: `git remote add test git@gitcafe.com:hivandu/LearnGit.git`
 
 现在可以用字符串`test`纸袋对应的仓库地址了，比如说，要抓取所有的gitcafe有的，但是本地仓库没有的信息，可以运行`git fetch test`
 gitcafe上的主分支master已经完全可以在本地访问了，对应的名字是`test/master`，可以合并到自己的某个分支，或者切换到这个分支。
 
-## 从远程仓库抓取数据
+### 从远程仓库抓取数据
 	git fetch [remote-name]
 
 如果clone了一个仓库，此命令会自动将远程仓库归于`origin`名下，所以，`git fetch origin`会抓取从你上次克隆以来别人上传到此仓库中的所有更新。**`fetch`命令只是将远端的数据拉到本地仓库，并不自动合并到当前工作分支，只有当确实准备好了，才能手工合并。**
@@ -193,48 +206,48 @@ gitcafe上的主分支master已经完全可以在本地访问了，对应的名�
 
 一般我们运行`git pull`,目的都是要从原始克隆的远端仓库中抓取数据后，合并到工作目录中的当前分支。
 
-## 推送到远程仓库
+### 推送到远程仓库
 	git push [remote-name] [branch-name]
 ex : `git push origin master`
 
-## 查看远程仓库信息
+### 查看远程仓库信息
 	git remote show [remote-name]
 ex: `git remote show origin`
 
-## 远程仓库的删除和重命名
+### 远程仓库的删除和重命名
 	git remote rename test paul
 	git remote rm paul
  
 
-# 打标签
-## 列显示已有的标签
+## 打标签
+### 列显示已有的标签
 	git tag
 	git tag -l 'v1.4.2'
 
-## 新建标签
+### 新建标签
 Git有两种标签类型: 轻量级的`lightweight` 和 附注的`annotated`。
 ### 含附注的标签
 	git tag -a v1.1 -m 'my version 1.1'
 
 可以使用`git show`来查看相应标签的版本信息。
 	git show v1.1
-## 部署标签
+### 签署标签
 如果有自己的私钥，还可以用GPG来签署标签，只需要把之前的`-a`改为`-s`(signed)即可:
 	git tag -s v1.2 -m 'my signed 1.2 tag'
 **在Mac内必须想要安装gpgtool**: `brew install gpg`
 
-## 轻量级标签
+### 轻量级标签
 就是一个保存着对应提交对象的校检和信息的文件。一个`-a`,`-s`,`-m`都不要用。直接给出标签名字
 	git tag v1.3-lw
 
-## 验证标签
+### 验证标签
 	git tag -v [tag-name]
 
-## 后期加注标签
+### 后期加注标签
 打标签的时候跟上对应提交对象的校验
 	git tag -a v1.0 8f3e6e
 
-## 分享标签
+### 分享标签
 	git push origin [tagname]
 ex: `git push origin v1.0`
 或一次推送所有标签
@@ -320,7 +333,7 @@ post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
 ### 特性分支
 `Topic`分支。一个特性分支是指一个短期的，用来实现单一特性或与其相关工作的分支。
 
-### 远程分支
+## 远程分支
 我们用(远程仓库名)/(分支名)这样的形式来表示远程分支。
 可以运行`git fetch origin`来同步远程服务器上的数据到本地
 	git remote add teamone git://git.team1.ourcompany.com/
@@ -441,6 +454,11 @@ Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-
 ### 安装
 ### 定制安装
 ### 配置文件和访问规则
+### 带‘拒绝’的高级访问控制
+### 通过改变文件限制push
+### 个人分支
+### “通配符”仓库
+### 其他功能
 
 ## Git守护进程
 ## Git 托管服务
@@ -504,9 +522,20 @@ Git项目本身提供了一份文档(Git项目源代码目录中Documentation/Su
 	git checkout -b featureA
 ### 公开的大型项目
 可以用`git farmat-patch`来生成`mbox`格式的文件然后作为附件发送。
-每个提交都会封装为一个`.patch`后缀的`mbox`文件，
-## 项目的管理
+每个提交都会封装为一个`.patch`后缀的`mbox`文件，其中只包含一封邮件，邮件标题就是提交消息，邮件内偶然那个包含补丁正文和Git版本号。
 
+Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有一个Documentation/SubmittingPatches文件，可以仔细读读，看看其他邮件程序的相关引导。
+
+首先在`~/.gitconfig`文件中配置imap项，每个选项都可用`git cofing`命令分别设置，当然直接编辑文件添加以下内容更便捷：
+	[imap]
+	  folder = "[Gmail]/Drafts"
+	  host = imaps://imap.gmail.com
+	  user = user@gmail.com
+	  pass = p4ssw0rd
+	  port = 993
+	  sslverify = false”
+
+## 项目的管理
 ### 使用特性分支进行工作
 
 
