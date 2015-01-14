@@ -548,6 +548,13 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 补丁是`git diff`，或者其他`diff`命令生成的，就该用`git apply`
 	git apply /tem/patch-ruby-client.patch
 
+用`--check`检查
+	git apply --check 0001-seeing-if-this-helps-the-gem.patch
+
+#### 使用am命令应用补丁
+对于`format-patch`制作的新补丁，应该用`git am`。
+	git am 0001-limit-log-function.patch
+
 
 
 
