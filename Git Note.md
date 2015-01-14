@@ -639,8 +639,136 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 发布一个新版本，首先要将代码压缩归档，方便那些没有Git的人们。
 	git archive master --prefix='project/' | gzip > `git describe master`.tar.gz
 如果要发布zip压缩包
-	$ git archive master --prefix='project/' --format=zip > `git describe master`.zip
+	git archive master --prefix='project/' --format=zip > `git describe master`.zip
 
+### 制作简报
+使用`git shortlog`可以方便快捷的制作一份修改日志.
+加入你上次发布的版本是v1.0.1，下面的命令将给出自从上次发布之后的所有提交的简介
+	git shortlog --no-merges master --not v1.0.1
+
+
+# Git 工具
+
+## 修订版本(Revision)选择
+### 单个修订版本
+### 简短的SHA
+	git show 1c002dd4b536e7479fe34593e72e6c6c1819e53b
+	git show 1c002dd4b536e7479f
+	git show 1c002dd
+
+Git 可以为你的SHA-1值生成出简短且唯一的缩写。如果你传递`--abbrev-commit`给`git log`，输出结果里就会使用简短且唯一的值
+	git log --abbrev-commit --pretty=oneline
+
+### 关于SHA-1的简短说明
+
+### 分支引用
+如果topic1分支指向ca82a6d,下面等价:
+	git show ca82a6d
+	git show topic1
+
+`rev-parse`，探测工具，可以查看一个例子中被间歇的SHA-1,或者某个分支指向哪个特定的SHA.
+	git rev-parse topic1
+
+### 引用日志里的简称
+	git reflog
+如果想查看HEAD在五次前的值，可以引用日志的输出中的`@{n}`引用
+	git show HEAD@{5}
+也可以查看某个分支在一定时间前的位置
+	git show master@{yesterday}
+想查看`git log`输出格式的引用日志信息:
+	git log -g master
+引用日志信息值存于本地
+
+### 祖先引用
+可以使用`^`
+	git show HEAD^
+	git show d921970^2
+
+另外一个指明祖先提交的方法是`~`
+`git show HEAD~3`也可以写成`git show HEAD^^^`
+
+### 提交范围
+#### 双点
+要看看实验分支那些没有被提交到主分支，可以使用`master..experiment`
+	git log master..experiment
+相反的，可以交换提交名字。
+这个语法的另一种常见也哦哦那个吐是查看你将把什么推送到远程:
+	git log origin/master..HEAD
+这条命令显示任何在你当前分支上而不在远程origin上的提交。
+也可以留空一边，让Git来假定它是HEAD
+	git log origin/master..
+
+#### 多点
+以下等他
+	git log refA..refB
+	git log ^refA refB
+	git log refB --not refA
+
+加入想查找从`refA`或`refB`包含的但是不被`refC`包含的提交，可以输入下面中的一个:
+	git log refA refB ^refC
+	git log refA refB --not refC
+
+#### 三点
+	git log master...experiment
+
+log命令的一个常用参数是`--left-right`，会显示每个提交到底处于那一侧的分支。这使得数据更加有用
+	git log --left-right master...experiment
+
+### 交互式暂存
+运行`git add`时加上`-i`或者`--interactive`，Git就会进入了一个交互式的`shell`模式:
+	git add -i
+
+### 暂存和撤回文件
+如果在`what now>`的提示后输入2或者u,这个脚本会提示你那些文件你想要储存:
+
+### 暂存补丁
+在`what now>`下输入5或者p,Git会询问那些文件你希望部分暂存，然后对于被选中文件的每一节，他会逐个显示文件的差异区块并询问你是否希望暂存他们:
+
+此处你可以输入`?`显示列表.
+
+## 储藏(Stashing)
+正处理项目某一部分的工作，而这个时候需要转到其他分支，但是又不想提交进行了一半的工作，否则以后无法回到这个工作点，解决办法就是`git stash`
+
+### 储藏你的工作
+	git stash
+如果要查看储存列表
+	git stash list
+如果想要应用储藏
+	git stash apply stash@{0}
+如果不指明，Git会使用最近的储藏并尝试使用它:
+	git stash apply
+
+`apply`选项只尝试应用储藏的工作，储藏的内容仍然在栈上，要移除，用`git stash drop`。
+	git stash drop stash@{0}
+也可以运行`git stash pop`来重新应用储藏，同事立刻从堆栈中移走。
+
+### 取消储藏(Un-applying a stash)
+	git stash show -p stash@{0} | git apply -R
+同样，没有指定，Git会选择最近的储藏
+	git stash show -p | git apply -R
+可以在git中增加一个stash-unapply，这样更有效率:
+	git config --global alias.stash-unapply '!git stash show -p | git apply -R'
+	
+	git stash-unapply
+
+### 从储藏中创建分支
+	git stash branch testchanges
+
+这是一个很棒的捷径来恢复储藏的工作然后在新的分支上继续当时的工作。
+
+## 重写历史
+“在 Git 上工作的时候，你也许会由于某种原因想要修订你的提交历史。Git 的一个卓越之处就是它允许你在最后可能的时刻再作决定。你可以在你即将提交暂存区时决定什么文件归入哪一次提交，你可以使用 stash 命令来决定你暂时搁置的工作，你可以重写已经发生的提交以使它们看起来是另外一种样子。这个包括改变提交的次序、改变说明或者修改提交中包含的文件，将提交归并、拆分或者完全删除——这一切在你尚未开始将你的工作和别人共享前都是可以的。”
+
+### 改变最近一次提交
+改变最近一次的提交说明:
+	git commit --amend
+也可以先进行`add`或`rm`来从新提交快照
+
+不要在最近一次提交被推送后还去修正它，因为修正会改变提交的SHA-1值，这个很像一次非常小的rebase
+
+### 修改多个提交说明
+	git rebase -i HEAD~3
+不要涵盖你已经推送的提交，这样提供了同样变更的不同版本。
 
 
 
