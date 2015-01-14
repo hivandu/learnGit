@@ -563,6 +563,73 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 	Applying: seeing if this helps the gem
 如果想让Git更只能的处理冲突，可以用`-3`选项进行三方合并。
 
+对于一次应用多个补丁所用的mbox格式文件，可以用`am -i`，这样打每个补丁前会停住，询问该如何操作
+
+### 检出远程分支
+	git remote add jessica git://github.com/jessica/myproject.git
+	git fetch jessica
+	git checkout -b rubyclient jessica/ruby-client
+
+临时合作，只需要`git pull`抓取远程仓库上的数据，合并到本地临时分支就可以了。
+	git pull git://githun.com/xxx/project.git
+
+### 决断代码取舍
+先看特性分支上都有那些新增的提交，比如在`contrib`特性分支上打了两个补丁，仅查看这两个补丁的提交信息，可以用`--not`选项指定要屏蔽的分支`master`，这样会剔除重复的提交历史:
+	git log contrib --not master
+
+如果想缠看当前分支同其他分支合并时的完整内容差异，有一个小窍门:
+	git diff master
+准确的说，是比较特性分支和它同master分支的共同祖先之间的差异。
+
+可以手动定位它们的共同祖先进行比较:
+	$ git merge-base contrib master
+	36c7db1hsosd6sda91jdsapl19hecheoal39sjds01
+	$ git diff 36c7db
+
+但这么做很麻烦，所以Git提供了便捷的`...`语法。对于`diff`命令，可以把`...`加在原始分支(拥有共同祖先)和当前分支之间:
+	git diff master...contrib
+
+### 代码集成
+#### 合并流程
+小型项目可以新建特性分支Ex: `iss234`,完成开发后并入`master`
+大型项目可以维护两个长期分支`master`和`develop`，在`develop`中衍分特性分支进行开发和合并，确认`develop`中的代码稳定可发行，再将master分支快进到稳定点。平时这两个分支都会推送到公开的代码库。
+
+这样，即可检出最近稳定版本，确保正常使用；也能检出开发版本，使用最前沿的新特性。
+
+#### 大项目的合并流程
+Git项目本身有四个长期分支: 发布的`master`分支，用于合并基本稳定特性的`next`分支，用于合并仍需改进特性的`pu`（proposed updates）分支，以及用于除错维护的`maint`(maintenance)分支。
+
+`master`一直快进，`next`偶尔衍合，`pu`频繁衍合
+`maint`分支是以最近一次发行版为基础分化而来，用于维护除错补丁。
+
+#### 衍合与挑拣(cherry-pick）的流程
+挑拣可以只引入其中一个`commits`
+加入值希望提取`e43a6`到主干分支，可以:
+	git cherry-pick e43a6dhe3034ksndhgdgadsakxgc783h31ddlf
+这会引入`e43a6`的代码，但是会得到不同的SHA-1值
+
+### 给发行版签名
+	git tag -s v1.5 -m 'my signed 1.5 tag'
+完成签名后，如何分发PGP公钥(public key)是个问题。（分发公钥是为了验证标签）。Git可以把key作为blob变量写入Git库，然后把它的内容直接写在标签里。`gpg --list-keys`命令可以显示出你所拥有的可以：
+
+	gpg --list-keys
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
