@@ -639,7 +639,7 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 发布一个新版本，首先要将代码压缩归档，方便那些没有Git的人们。
 	git archive master --prefix='project/' | gzip > `git describe master`.tar.gz
 如果要发布zip压缩包
-	$ git archive master --prefix='project/' --format=zip > `git describe master`.zip
+	git archive master --prefix='project/' --format=zip > `git describe master`.zip
 
 
 
