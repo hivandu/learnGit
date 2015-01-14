@@ -537,6 +537,15 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 
 ## 项目的管理
 ### 使用特性分支进行工作
+	git checkout -b sc/ruby_client master
+
+### 采纳来自邮件的补丁
+`git apply`或者`git am`
+
+#### apply命令
+补丁是`git diff`，或者其他`diff`命令生成的，就该用`git apply`
+	git apply /tem/patch-ruby-client.patch
+
 
 
 
