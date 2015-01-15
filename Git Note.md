@@ -1,4 +1,9 @@
-
+> 此Note是在《Pro Git》基础上的学习笔记
+> 原文作者: Scott Chacon
+> 翻译制作: Andor Chen　　
+> 地址链接: http://leanpub.com/progit-cn
+> This version was published on 2014-05-14
+> This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License][1]　
 # Git 基础
 ## 初次运行Git前的配置
 `git config`
@@ -311,9 +316,9 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 ### 遇到冲突时的分支合并
 	git mergetool
 文件比对工具: Kaleidoscopeapp
-Git 比对插件: [KSDIFF][3]
+Git 比对插件: [KSDIFF][4]
 
-post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
+post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][5]
 
 
 ## 分支的管理
@@ -439,7 +444,7 @@ or
 
 ## 生成SSH公钥
 	ssh-keygen
-Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-key][5]
+Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-key][6]
 
 	cat id_rsa.pub
 ## 架设服务器
@@ -462,7 +467,7 @@ Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-
 
 ## Git守护进程
 ## Git 托管服务
-Git最新的托管服务列表: [https://git.wiki.kernel.org/index.php/GitHosting][6]
+Git最新的托管服务列表: [https://git.wiki.kernel.org/index.php/GitHosting][7]
 ### Github
 ### 从Subversion导入项目
 ### 添加协作开发者
@@ -828,7 +833,11 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 				git commit-tree "$@";
 			fi' HEAD
 
-### 使用Git调试
+## 使用Git调试
+### 文件标注
+如果你发现自己的代码中的一个方法存在缺陷，你可以用`git blame`来标注文件，查看那个方法的每一行分别是由谁在那一天修改的。下面这个栗子使用了`-L`选项来限制输出范围在第12\~22行
+
+	git blame -L 12,22 simplegit.rb
 
 
 
@@ -851,9 +860,10 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 
 
 
-[3]:	http://www.kaleidoscopeapp.com/ksdiff
-[4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
-[5]:	http://github.com/guides/providing-your-ssh-key
-[6]:	https://git.wiki.kernel.org/index.php/GitHosting
+[1]:	http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US
+[4]:	http://www.kaleidoscopeapp.com/ksdiff
+[5]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
+[6]:	http://github.com/guides/providing-your-ssh-key
+[7]:	https://git.wiki.kernel.org/index.php/GitHosting
 
 [image-1]:	images/git_tree.jpg
