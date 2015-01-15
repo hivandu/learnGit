@@ -1139,7 +1139,7 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 	$ git checkout master
 	Switched to branch "master"
 	$ ls
-	README	rack
+	README  rack
 
 然后，当你切换回来，你会得到一个空的rack目录。你可以运行git submodule update重新克隆，也可以将/tmp/rack目录重新移回空目录。
 
@@ -1150,6 +1150,11 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 
 	git remote add rack_remote git@github.com:schacon/rack.git
 	git fetch rack_remote
+	git checkout -b rack_branch rack_remote/master
+
+然后拉取`rack_branch`到你的主项目的`master`分支的`rack`子目录:
+
+	git read-tree --prefix=rack/ -u rack_branch
 
 
 
