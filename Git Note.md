@@ -1179,16 +1179,150 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 
 # 自定义Git
 ## 配置Git
+	git config --global user.name "Hivan Du"
+	git config --global user.email doo@hivan.me
 
+### 客户端基本配置
+	git config --help
 
+	code.editor
 
+可以改变默认编辑器
 
+	git config --global core.editor sm -w
 
+	commit.template
 
+提交的时候，Git会默认使用该文件定义的内容。
+Ex: 你创建了一个模板文件`$HOME/.gitmessage.txt`:
 
+	subject line
+	what happened
+	[ticket: X]
 
+	git config --global commit.template
+	$HOME/.gitmessage.txt
+	git commit
 
+提交的时候，编辑器中显示的提交信息如下:
 
+> subject line
+> 
+> what happened
+> 
+> [ticket: X]
+> # Please enter the commit message for your changes.
+> Lines starting
+
+如果有特定的策略要运用在提交信息上，系统上创建一个模板文件，设置Git默认使用它，这样当提交时，你的策略每次都会被运用。
+
+	core.paper
+这个指定Git运行诸如`log`,`diff`等所使用的分页器，你能设置成用`more`或者任何你喜欢的分页器（默认是less), 当然你也可以什么都不用，设置空字符串:
+
+	git config --global core.paper "
+
+	user.signingkey
+
+如果你要创建经签署的含附注的标签，那么把你的GPG签署密钥设置为配置项会更好，设置密钥ID如下:
+
+	git config --global user.signingkey <gpg-key-id>
+
+PS: 关于gpg公钥的作用，是为了不让其他开发者随意修改代码而设置的。
+如这里: [http://airk000.github.io/git/2013/09/30/git-tag-with-gpg-key][8]
+
+`core.excludesfile`
+
+如果你想在项目库之外的文件来定义那些需要被忽略的文件的画，用`core.excludesfile`通知Git该文件所处的位置，文件内容和`.gitignore`类似
+
+`help.autocorrect`
+
+该配置项只在Git 1.6.1及以上版本有效，假如你在Git1.6中错打了一条命令，会显示:
+
+	git com
+	git: 'com' is not a git command. See 'git --help'.
+	
+	Did you mean one of these?
+		commit
+		co
+		column
+
+如果把`help.autocorrect`设置成`1`（启用自动修正），那在只有一个命令被模糊匹配到的情况下，Git会自动运行该命令。
+
+### Git中的着色
+`color.ui`设置为`true`来打开所有的默认终端着色
+
+	git config --global color.ui true
+
+另外还有`false`和`always`命令，大多数情况下，大多数情况下，你如果想被重定向的输出中插入颜色码，你能传递`--color`标志给Git命令来迫使它这么做，`color.ui=true`应该是首选
+
+`color.*`
+想要具体到哪些命令输出需要被着色以及怎样着色或者 Git 的版本很老，你就要用到和具体命令有关的颜色配置选项，它们都能被置为`true`、`false`或`always`：
+
+	color.branch
+	color.diff
+	color.interactive
+	color.status
+
+每个选项都有子选项，可以用来覆盖其父设置，以大道为输出的各个部分着色的目的。
+Ex: 让`diff`输出的改变信息以粗体，蓝色前景和黑色背景的形式显示:
+
+	git config --global color.diff.meta "blue black bold"
+
+你能设置的颜色值如：normal、black、red、green、yellow、blue、magenta、cyan、white，正如以上例子设置的粗体属性，想要设置字体属性的话，可以选择如：bold、dim、ul、blink、reverse。
+
+如果你想配置子选项的话，可以参考git config帮助页。
+
+### 外部的合并与比较工具
+下载**P4Merge:**:
+http://www.perforce.com/perforce/downloads/component.html
+
+首先把你要运行的命令放入外部包装脚本中，我会使用Mac系统上的路径来指定该脚本的位置，在其他系统上，它应该被放置在二进制文件p4merge所在的目录中。创建一个merge包装脚本，名字叫作extMerge，让它带参数调用p4merge二进制文件
+
+	cat /usr/local/bin/extMerge
+	#!/bin/sh
+	/Applications/p4merge.app/Contents/MacOS/p4merge $*
+
+`diff`包装脚本首先确定传递过来7个参数，然后把其中两个传递给`merge`包装脚本，默认情况下，Git传递以下参数给`diff`:
+
+	path old-file old-hex old-mode new-file new-hex new-mod
+
+由于你仅仅需要`old-file`和`new-file`参数，用`diff`包装脚本来传递它们把。
+
+	cat /usr/local/bin/extDiff
+	#!/bin/sh
+	[ $# -eq 7 ] && /usr/local/bin/extMerge "$2" "$5"
+
+确认这两个脚本是可执行的：
+
+	sudo chmod +x /usr/local/bin/extMerge
+	sudo chmod +x /usr/local/bin/extDiff
+
+现在来配置使用自定义比较和合并工具。这需要许多自定义设置: 
+- `merge.tool`通知Git使用哪个合并工具; 
+- `mergetool.*.cmd`规定命令运行的方式; 
+- `mergetool.trustExitCode`会通知Git程序的推出是否只是合并操作成功; 
+- `diff.external`通知Git用什么命令做比较。
+因此，你能运行以下4条配置命令:
+
+	$ git config --global merge.tool extMerge
+	$ git config --global mergetool.extMerge.cmd \
+	    'extMerge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"'
+	$ git config --global mergetool.trustExitCode false
+	$ git config --global diff.external extDiff
+
+或者直接编辑`~/.gitconfig`文件如下:
+
+	[merge]
+	  tool = extMerge
+	[mergetool "extMerge"]
+	  cmd = extMerge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+	  trustExitCode = false
+	[diff]
+	  external = extDiff
+
+设置完毕后，运行`diff`命令:
+
+	git diff 
 
 
 
@@ -1206,5 +1340,6 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 [5]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
 [6]:	http://github.com/guides/providing-your-ssh-key
 [7]:	https://git.wiki.kernel.org/index.php/GitHosting
+[8]:	http://airk000.github.io/git/2013/09/30/git-tag-with-gpg-key
 
 [image-1]:	images/git_tree.jpg
