@@ -1,4 +1,9 @@
-
+> 此Note是在《Pro Git》基础上的学习笔记
+> 原文作者: Scott Chacon
+> 翻译制作: Andor Chen　　
+> 地址链接: http://leanpub.com/progit-cn
+> This version was published on 2014-05-14
+> This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License][1]　
 # Git 基础
 ## 初次运行Git前的配置
 `git config`
@@ -311,9 +316,9 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 ### 遇到冲突时的分支合并
 	git mergetool
 文件比对工具: Kaleidoscopeapp
-Git 比对插件: [KSDIFF][3]
+Git 比对插件: [KSDIFF][4]
 
-post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][4]
+post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][5]
 
 
 ## 分支的管理
@@ -439,7 +444,7 @@ or
 
 ## 生成SSH公钥
 	ssh-keygen
-Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-key][5]
+Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-key][6]
 
 	cat id_rsa.pub
 ## 架设服务器
@@ -462,7 +467,7 @@ Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-
 
 ## Git守护进程
 ## Git 托管服务
-Git最新的托管服务列表: [https://git.wiki.kernel.org/index.php/GitHosting][6]
+Git最新的托管服务列表: [https://git.wiki.kernel.org/index.php/GitHosting][7]
 ### Github
 ### 从Subversion导入项目
 ### 添加协作开发者
@@ -756,6 +761,83 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 
 这是一个很棒的捷径来恢复储藏的工作然后在新的分支上继续当时的工作。
 
+## 重写历史
+“在 Git 上工作的时候，你也许会由于某种原因想要修订你的提交历史。Git 的一个卓越之处就是它允许你在最后可能的时刻再作决定。你可以在你即将提交暂存区时决定什么文件归入哪一次提交，你可以使用 stash 命令来决定你暂时搁置的工作，你可以重写已经发生的提交以使它们看起来是另外一种样子。这个包括改变提交的次序、改变说明或者修改提交中包含的文件，将提交归并、拆分或者完全删除——这一切在你尚未开始将你的工作和别人共享前都是可以的。”
+
+### 改变最近一次提交
+改变最近一次的提交说明:
+	git commit --amend
+也可以先进行`add`或`rm`来从新提交快照
+
+不要在最近一次提交被推送后还去修正它，因为修正会改变提交的SHA-1值，这个很像一次非常小的rebase
+
+### 修改多个提交说明
+	git rebase -i HEAD~3
+不要涵盖你已经推送的提交，这样提供了同样变更的不同版本。
+
+\<\<\<\<\<\<\< HEAD
+=======
+很重要的一点是你得注意这些提交的顺序与你通常通过log命令看到的是相反的。
+
+你需要修改这个脚本来让它停留在你想修改的变更上。要做到这一点，你只要将你想修改的每一次提交前面的pick改为edit。
+
+### 重排提交
+更改`pick`的顺序
+
+### 压制(Squashing)提交
+> > > > > > > 8103fe6... update Git Note for git rebase
+
+将`pick`改为`squash`
+	pick f7f3f6d changed my name a bit
+	squash 310154e updated README formatting and added blame
+	squash a5f4a0d added cat-file
+
+### 拆分提交
+可以在`rebase -i`脚本中修改想拆分的提交前的指令为`edit`.哪里你可以用`git reset HEAD^`对那次提交进行一次混合的重置，浙江撤销那次提交并且将修改的文件撤回。此时你可以暂存并提交文件，直到你拥有多次提交，结束后，运行`git rebase --continue`。
+	git reset HEAD^
+	git add README
+	git commit -m 'updated README'
+	git add lib/simplegit.rb
+	git commit -m 'added blame'
+	git rebase --continue
+
+Git在脚本中拆分中间那次，应用了最后一次提交。
+
+**注意：所有`rebase`操作会修改SHA值，请确保不含已推送到共享仓库的提交。**
+
+### 核弹级选项: filter-branch
+修改大量提交, `filter-branch`会大面积的修改你的历史。
+
+#### 从所有提交中删除一个文件
+比如从整个历史上删除一个叫`password.txt`的文件
+	git filter-brach --tree-filter 'rm -f passwords.txt' HEAD
+
+如果你想删除所有不小心提交上去的编辑器备份文件，你可以运行类似
+	git filter-branch --tree-filter "find * -type f -name '*~' -delete" HEAD
+
+Git重写目录树并且提交，然后将分支指针移动到末尾。
+一个比较好的办法是在一个测试分支上做这些，然后再`hard-reset`你的主分支
+如果是在所有分支上运行`filter-branch`的话，你可以传递一个`--all`给命令
+
+#### 将一个子目录设置为新的根目录
+	git filter-branch --subdirectory-filter trunk HEAD
+
+#### 全局性的更换电子邮件地址
+	git filter-branch --commit-filter '
+			if ["$GIT_AUTHOR_EMAIL" = "schacon@localhost" ];
+			then
+				GIT_AUTHOR_NAME="Hivan Du";
+				GIT_AUTHOR_EMAIL="doo@hivan.me";
+				git commit-tree "$@";
+			else
+				git commit-tree "$@";
+			fi' HEAD
+
+## 使用Git调试
+### 文件标注
+如果你发现自己的代码中的一个方法存在缺陷，你可以用`git blame`来标注文件，查看那个方法的每一行分别是由谁在那一天修改的。下面这个栗子使用了`-L`选项来限制输出范围在第12\~22行
+
+	git blame -L 12,22 simplegit.rb
 
 
 
@@ -776,9 +858,12 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 
 
 
-[3]:	http://www.kaleidoscopeapp.com/ksdiff
-[4]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
-[5]:	http://github.com/guides/providing-your-ssh-key
-[6]:	https://git.wiki.kernel.org/index.php/GitHosting
+
+
+[1]:	http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US
+[4]:	http://www.kaleidoscopeapp.com/ksdiff
+[5]:	https://tommcfarlin.com/kaleidoscope-git-diff-tool/
+[6]:	http://github.com/guides/providing-your-ssh-key
+[7]:	https://git.wiki.kernel.org/index.php/GitHosting
 
 [image-1]:	images/git_tree.jpg
