@@ -770,7 +770,7 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 	git rebase -i HEAD~3
 不要涵盖你已经推送的提交，这样提供了同样变更的不同版本。
 
-<<<<<<< HEAD
+\<\<\<\<\<\<\< HEAD
 =======
 很重要的一点是你得注意这些提交的顺序与你通常通过log命令看到的是相反的。
 
@@ -780,7 +780,7 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 更改`pick`的顺序
 
 ### 压制(Squashing)提交
->>>>>>> 8103fe6... update Git Note for git rebase
+> > > > > > > 8103fe6... update Git Note for git rebase
 
 将`pick`改为`squash`
 	pick f7f3f6d changed my name a bit
@@ -807,9 +807,28 @@ Git在脚本中拆分中间那次，应用了最后一次提交。
 比如从整个历史上删除一个叫`password.txt`的文件
 	git filter-brach --tree-filter 'rm -f passwords.txt' HEAD
 
+如果你想删除所有不小心提交上去的编辑器备份文件，你可以运行类似
+	git filter-branch --tree-filter "find * -type f -name '*~' -delete" HEAD
 
+Git重写目录树并且提交，然后将分支指针移动到末尾。
+一个比较好的办法是在一个测试分支上做这些，然后再`hard-reset`你的主分支
+如果是在所有分支上运行`filter-branch`的话，你可以传递一个`--all`给命令
 
+#### 将一个子目录设置为新的根目录
+	git filter-branch --subdirectory-filter trunk HEAD
 
+#### 全局性的更换电子邮件地址
+	git filter-branch --commit-filter '
+			if ["$GIT_AUTHOR_EMAIL" = "schacon@localhost" ];
+			then
+				GIT_AUTHOR_NAME="Hivan Du";
+				GIT_AUTHOR_EMAIL="doo@hivan.me";
+				git commit-tree "$@";
+			else
+				git commit-tree "$@";
+			fi' HEAD
+
+### 使用Git调试
 
 
 
