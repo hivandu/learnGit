@@ -1156,7 +1156,29 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 
 	git read-tree --prefix=rack/ -u rack_branch
 
+然后可以直接拉取来获得上游的变更
 
+	git checkout rack_branch
+	git pull
+
+之后…
+
+	git checkout master
+	git merge --squash -s subtree --no-commit rack_branch
+
+`git merge -s subtree`归并变更回`master`分支，为了预置提交说明，需要同时使用`--squash`和`--no-commit`选项
+
+
+为了得到`rack`子目录和你`rack_branch`分支的区别———以决定你是否需要归并，你不能使用一般的`diff`命令。而是对你想比较的分支运行`git diff-tree`:
+
+	git diff-tree -p rack_branch
+
+或者，为了比较你的`rack`子目录和服务器上你拉取时的`master`分支，你可以:
+
+	git diff-tree -p rack_remote/master
+
+# 自定义Git
+## 配置Git
 
 
 
