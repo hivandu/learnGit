@@ -1094,7 +1094,7 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 
 	git log -1 rack
 
-然后发个邮件给那个家伙: **f\*\*k u!* 
+然后发个邮件给那个家伙: \**f\*\*k u!* 
 ### 上层项目
 “有时候，开发者想按照他们的分组获取一个大项目的子目录的子集。如果你是从 CVS 或者 Subversion 迁移过来的话这个很常见，在那些系统中你已经定义了一个模块或者子目录的集合，而你想延续这种类型的工作流程。
 
@@ -1114,6 +1114,47 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 	git commit -am 'add rack submodule'
 	git checkout master
 	git status
+
+最后，如果你跟踪了项目中的一些文件，想把他们移动到子模块去，你必须非常小心。
+
+假如你项目里有一个子目录里放了`rack`的文件，然后你想把它转换为子模块。如果你删除了子目录然后运行`submodule add`:
+
+	rm -rf rack/
+	git submodule add git@github.com:schacon/rack.git rack
+	'rack' already exists in the index
+  
+你必须先将`rack`目录撤回，然后才能加入子模块:
+
+	git rm -r rack
+	git submodule add git@github.com:schacon/rack.git rack
+
+现在假设你在一个分支里那样做了。如果你尝试切换回一个仍然在目录里保留那些文件而不是子模块的分支时——你会得到下面的错误：
+
+	$ git checkout master
+	error: Untracked working tree file 'rack/AUTHORS' would be overwritten by merge.
+
+你必须先移除rack子模块的目录才能切换到不包含它的分支：
+
+	$ mv rack /tmp/
+	$ git checkout master
+	Switched to branch "master"
+	$ ls
+	README	rack
+
+然后，当你切换回来，你会得到一个空的rack目录。你可以运行git submodule update重新克隆，也可以将/tmp/rack目录重新移回空目录。
+
+### 子树合并
+子树归并是拥有两个工程，其中一个映射到另外一个项目的子目录。当指定一个子树归并，Git会探知其中一个是另外一个的子树从而实现正确的归并。
+
+首先，你将`Rack`应用假如到项目中。你将`Rack`项目当作你项目中的一个远程引用，然后将它检出到自身的分支:
+
+	git remote add rack_remote git@github.com:schacon/rack.git
+	git fetch rack_remote
+
+
+
+
+
 
 
 
