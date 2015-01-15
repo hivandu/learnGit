@@ -30,6 +30,7 @@
 
 ### 查看配置信息
 `git config —list`
+
 ex: `git config user.name`
 
 # Git 基础
@@ -64,13 +65,16 @@ ex: `git config user.name`
 	cat .gitignore
 需要修改`.gitignore`，
 规范格式如下:
-- “所有空行或者以注释符号 ＃ 开头的行都会被 Git 忽略。
+- 所有空行或者以注释符号 ＃ 开头的行都会被 Git 忽略。
 - 可以使用标准的 glob 模式匹配。
 - 匹配模式最后跟反斜杠（/）说明要忽略的是目录。
-- 要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。”
+- 要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。
+- 
 > “所谓的 glob 模式是指 shell 所使用的简化了的正则表达式。星号（\*）匹配零个或多个任意字符；[abc]() 匹配任何一个列在方括号中的字符（这个例子要么匹配一个 a，要么匹配一个 b，要么匹配一个 c）；问号（?）只匹配一个任意字符；如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如 [0-9]() 表示匹配所有 0 到 9 的数字）。”
 > 摘录来自: Andor Chen. “精通 Git”。 iBooks. 
+
 ex:
+
 	# 此为注释 – 将被 Git 忽略
 	# 忽略所有 .a 结尾的文件
 	*.a
@@ -84,6 +88,7 @@ ex:
 	doc/*.txt
 	# ignore all .txt files in the doc/ directory
 	doc/**/*.txt
+
 >  摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 
 ### 查看已经暂存和未暂存的更新
@@ -100,6 +105,7 @@ ex:
 一半都是`VIM`，可以更改默认editor
 或者直接参加参数`git commit -m "want change editor"`
 or `git commit -a -m "want change editor"`来跳过git add 步骤
+
 ### 跳过适用暂存区域
 	git commit -a -m 'added new benchmarks'
 
@@ -113,6 +119,7 @@ or `git commit -a -m "want change editor"`来跳过git add 步骤
 
 ### 移动文件
 	git mv file_from file_to
+
 ex: `git mv README.txt README`　
 
 ## 查看提交历史
@@ -177,6 +184,7 @@ ex: `git mv README.txt README`　
 --committer 仅显示指定提交者相关的提交。
 
 ex:
+
 	git log --pretty="%h-%s" --author="Hivan Du" --since="2015-1-10" --before="2015-1-11" --no-merges -- add/
 
 ### 图形化工具
@@ -203,6 +211,7 @@ ex:
 
 ### 添加远程仓库
 	git remote add [shortname] [url]
+
 ex: `git remote add test git@gitcafe.com:hivandu/LearnGit.git`
 
 现在可以用字符串`test`纸袋对应的仓库地址了，比如说，要抓取所有的gitcafe有的，但是本地仓库没有的信息，可以运行`git fetch test`
@@ -219,10 +228,12 @@ gitcafe上的主分支master已经完全可以在本地访问了，对应的名�
 
 ### 推送到远程仓库
 	git push [remote-name] [branch-name]
+
 ex : `git push origin master`
 
 ### 查看远程仓库信息
 	git remote show [remote-name]
+
 ex: `git remote show origin`
 
 ### 远程仓库的删除和重命名
@@ -260,19 +271,23 @@ Git有两种标签类型: 轻量级的`lightweight` 和 附注的`annotated`。
 
 ### 分享标签
 	git push origin [tagname]
+
 ex: `git push origin v1.0`
 或一次推送所有标签
+
 	git push origin --tags
 
 ## 技巧和窍门
 ### 自动补全
 如果你用的是 Bash shell，可以试试看 Git 提供的自动补全脚本。下载 Git 的源代码，进入 contrib/completion 目录，会看到一个 git-completion.bash 文件。将此文件复制到你自己的用户主目录中（译注：按照下面的示例，还应改名加上点：`cp git-completion.bash ~/.git-completion.bash）`，并把下面一行内容添加到你的 .bashrc 文件中：
 	source ~/.git-completion.bash
-“也可以为系统上所有用户都设置默认使用此脚本。Mac 上将此脚本复制到 `/opt/local/etc/bash_completion.d` 目录中，Linux 上则复制到 `/etc/bash_completion.d/` 目录中。这两处目录中的脚本，都会在 Bash 启动时自动加载。”
-“在输入 Git 命令的时候可以敲两次跳格键（Tab），就会看到列出所有匹配的可用命令建议：”
+
+也可以为系统上所有用户都设置默认使用此脚本。Mac 上将此脚本复制到 `/opt/local/etc/bash_completion.d` 目录中，Linux 上则复制到 `/etc/bash_completion.d/` 目录中。这两处目录中的脚本，都会在 Bash 启动时自动加载。
+
+在输入 Git 命令的时候可以敲两次跳格键（Tab），就会看到列出所有匹配的可用命令建议：
+
 	git co<tab><tab>
 	commit config
-摘录来自: Andor Chen. “精通 Git”。 iBooks. 
 
 ## Git 命令别名
 	git config --global alias.co checkout
@@ -281,12 +296,19 @@ ex: `git push origin v1.0`
 	git config --global alias.st status
 
 比如取消暂存文件的输入:
+
 	git config --global alias.unstage 'reset HEAD --'
+
 last命令:
+
 	git config --global alias.last 'log -1 HEAD'
+
 查看最后一次提交，就变得简单多了:
+
 	git last
+
 如果是外部命令，而非Git子命令，可以在命令前加上`!`就行
+
 	git config --global alias.visual '!gitk'
 
 # Git分支
@@ -304,9 +326,12 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 ## 分支的新建与合并
 ### 分支的新建与切换
 	git checkout -b iss53
+
 相当于:
+
 	git branch iss53
 	git checkout iss53
+
 提示`Fast-forward` ，由于当前mster所在提交是要并入hotfix分支的直接上游，Git只需要把master分支指针直接右移。如果顺着一个分支走下去可以到达另一个分支的话，那么Git合并两者，值会简单的右移指针。
 
 **删除分支:**
@@ -316,11 +341,13 @@ git 保存着一个名问HEAD的特别指针，它指向你正在工作中的本
 
 ### 分支的合并
 	git merge
+
 这次Git是将两个分支的末端以及他们的共同祖先进行一次简单的三方合并计算，这次没有简单的指针右移，而是对三方合并后的结果重新做一个新的快照。
 新快照比较特殊，有两个祖先
 
 ### 遇到冲突时的分支合并
 	git mergetool
+
 文件比对工具: Kaleidoscopeapp
 Git 比对插件: [KSDIFF][4]
 
@@ -333,6 +360,7 @@ post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][5]
 筛选已经（尚未）与当前分支合并的分支`--merged`和`--no-merged`
 
 	git branch -d testing 
+
 如果testing还没有合并，会提示错误，但是如果想强制执行，使用`-D`
 
 ## 利用分支进行开发的工作流程
@@ -347,30 +375,38 @@ post: [https://tommcfarlin.com/kaleidoscope-git-diff-tool/][5]
 ## 远程分支
 我们用(远程仓库名)/(分支名)这样的形式来表示远程分支。
 可以运行`git fetch origin`来同步远程服务器上的数据到本地
+
 	git remote add teamone git://git.team1.ourcompany.com/
 
 ### 推送本地分支
 如果有一个叫`serverfix`的分支需要和他人一起开发，可以运行`git push (远程仓库名)(分支名)`
+
 	git push origin serverfix
 	
 	git push origin serverfix:awesomebranch
+
 通过这个语法，可以把本地分支推送到某个命名不同的远程分支，如远程分支叫`awesomebranch`
 
 `fetch`下载好新的远程分支，仍然无法编辑该远程仓库中的分支。
 
 合并到当前分支
+
 	git merge origin/serverfix
 
 分化一个新的分支:
+
 	git checkout -b serverfix origin/serverfix
 
 ### 跟踪远程分支
 远程分支checkout出来的本地分支，称为`tracking branch`（跟踪分支）。
+
 `git push`会自省推断向那个服务器的哪个分支推送数据
 `git pull`会获取所有远程索引，并合并到本地
 
 	git checkout -b [分支名][远程名]/[分支名]
+
 git 1.6.2以上版本，可以用`--track`简化
+
 	git checkout --track origin/serverfix
 
 ### 删除远程分支
@@ -385,10 +421,11 @@ git 1.6.2以上版本，可以用`--track`简化
 
 ### 有趣的衍合
 	git rebase --onto master server client
+
 这好比在说：“取出 client 分支，找出 client 分支和 server 分支的共同祖先之后的变化，然后把它们在 master 上重演一遍”.
 
 ### 衍合的风险
-“一旦分支中的提交对象发布到公共仓库，就千万不要对该分支进行衍合操作”
+一旦分支中的提交对象发布到公共仓库，就千万不要对该分支进行衍合操作”
 
 如果把衍合当成一种在推送之前清理提交历史的手段，而且仅仅衍合那些尚未公开的提交对象，就没问题。如果衍合那些已经公开的提交对象，并且已经有人基于这些提交对象开展了后续开发工作的话，就会出现叫人沮丧的麻烦。
 
@@ -399,17 +436,25 @@ git 1.6.2以上版本，可以用`--track`简化
 
 ### 本地协议
 **Local Protocol**
+
 	git clone /opt/git/project.git
+
 or
+
 	git clone file:///opt/git/project.git
+
 `file://`路径，Git会调用它平时通过网络来传输数据的供需，效率较低。原因是当你需要一个不包含无关引用或对象的干净仓库副本的时候。
 要添加一个本地仓库作为现有Git项目的远程仓库，可以这样
+
 	git remote add local_proj /opt/git/project.git
 
 ### SSH 协议
 SSH是唯一一个同时支持读写操作的网络协议，同时也是一个验证授权的网络协议;
+
 	git clone ssh://user@server/project.git
+
 or
+
 	git clone user@server:project.git
 
 ### Git协议
@@ -417,30 +462,40 @@ or
 
 ### HTTP/S 协议
 下面操作允许通过HTTP对仓库进行读取:
+
 	$ cd /var/www/htdocs
 	$ git clone --bare /path/to/git_project
 	git project.git
 	$ cd gitproject.git
 	$ mv hooks/post-update.sample hooks/post-update
 	$ chmod a+x hooks/post-update
+
 之后:
+
 	git clone http://example.com/gitproject.git
 
 ## 服务器上部署Git
 架设Git服务器前，先要把现有仓库导出为裸仓库
 克隆时使用`--bare`选项
+
 	git clone --bare my_project my_project.gits
 `git clone`相当于 `git init`+`git fetch`
+
 整体效果大致相当于:
+
 	cp -Rf my_project/.git my_project.git
 
 ### 把裸仓库移动到服务器上
 有了裸仓库的副本后，剩下的就是把它放到服务器上并设定相关协议。
+
 	scp -r my_project.git user@git.example.com:/opt/git
+
 现在，所有对该服务器有SSH访问权限，并可读取`/opt/git`目录的用户都可以用下面的命令克隆该项目:
+
 	git clone user@git.example.com:/opt/git/my_project.git
 
 设置组权限可写:
+
 	ssh user@git.example.com
 	cd /opt/git/my_project.git
 	git init --bare --shared
@@ -450,6 +505,7 @@ or
 
 ## 生成SSH公钥
 	ssh-keygen
+
 Github上有关SSH公钥的向导: [http://github.com/guides/providing-your-ssh-key][6]
 
 	cat id_rsa.pub
@@ -508,8 +564,9 @@ Git项目本身提供了一份文档(Git项目源代码目录中Documentation/Su
 - “最后需要谨记的是提交说明的撰写。写得好可以让大家协作起来更轻松。一般来说，提交说明最好限制在一行以内，50 个字符以下，简明扼要地描述更新内容，空开一行后，再展开详细注解。”
 
 来自tpope.net的Time Pope的提交说明格式模板:
-> 本次更新的简要描述（50 个字符以内）
 
+> 本次更新的简要描述（50 个字符以内）
+> 
 > 如果必要，此处展开详尽阐述。段落宽度限定在 72 个字符以内。
 > 某些情况下，第一行的简要描述将用作邮件标题，其余部分作为邮件正文。
 > 其间的空行是必要的，以区分两者（当然没有正文另当别论）。
@@ -531,14 +588,17 @@ Git项目本身提供了一份文档(Git项目源代码目录中Documentation/Su
 	git clone [url]
 	cd project
 	git checkout -b featureA
+
 ### 公开的大型项目
 可以用`git farmat-patch`来生成`mbox`格式的文件然后作为附件发送。
 每个提交都会封装为一个`.patch`后缀的`mbox`文件，其中只包含一封邮件，邮件标题就是提交消息，邮件内偶然那个包含补丁正文和Git版本号。
+
 	git format-patch -M origin/master
 
 Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有一个Documentation/SubmittingPatches文件，可以仔细读读，看看其他邮件程序的相关引导。
 
 首先在`~/.gitconfig`文件中配置imap项，每个选项都可用`git cofing`命令分别设置，当然直接编辑文件添加以下内容更便捷：
+
 	[imap]
 	  folder = "[Gmail]/Drafts"
 	  host = imaps://imap.gmail.com
@@ -551,6 +611,7 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 ### 使用特性分支进行工作
 如果要继承新的代码进来，最好局限在特性分支上做。
 现在先新建临时分支:
+
 	git checkout -b sc/ruby_client master
 
 ### 采纳来自邮件的补丁
@@ -558,20 +619,25 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 
 #### apply命令
 补丁是`git diff`，或者其他`diff`命令生成的，就该用`git apply`
+
 	git apply /tem/patch-ruby-client.patch
 
 用`--check`检查
+
 	git apply --check 0001-seeing-if-this-helps-the-gem.patch
 
 #### 使用am命令应用补丁
 对于`format-patch`制作的新补丁，应该用`git am`。
+
 	git am 0001-limit-log-function.patch
 
 有时候Git会在有冲突的文件里加入冲突解决标记，这与合并或衍合操作一样。解决办法也一样，先编辑文件消除冲突，然后暂存，最后运行`git aam --resolved`提交修正结果:
+
 	[fix the file]
 	git add ticgit.gemspec
 	git am --resolved
 	Applying: seeing if this helps the gem
+
 如果想让Git更只能的处理冲突，可以用`-3`选项进行三方合并。
 
 对于一次应用多个补丁所用的mbox格式文件，可以用`am -i`，这样打每个补丁前会停住，询问该如何操作
@@ -582,22 +648,28 @@ Git提供了一个IMAP发送补丁文件的工具。另外，Git源代码中有�
 	git checkout -b rubyclient jessica/ruby-client
 
 临时合作，只需要`git pull`抓取远程仓库上的数据，合并到本地临时分支就可以了。
+
 	git pull git://githun.com/xxx/project.git
 
 ### 决断代码取舍
 先看特性分支上都有那些新增的提交，比如在`contrib`特性分支上打了两个补丁，仅查看这两个补丁的提交信息，可以用`--not`选项指定要屏蔽的分支`master`，这样会剔除重复的提交历史:
+
 	git log contrib --not master
 
 如果想缠看当前分支同其他分支合并时的完整内容差异，有一个小窍门:
+
 	git diff master
+
 准确的说，是比较特性分支和它同master分支的共同祖先之间的差异。
 
 可以手动定位它们的共同祖先进行比较:
+
 	$ git merge-base contrib master
 	36c7db1hsosd6sda91jdsapl19hecheoal39sjds01
 	$ git diff 36c7db
 
 但这么做很麻烦，所以Git提供了便捷的`...`语法。对于`diff`命令，可以把`...`加在原始分支(拥有共同祖先)和当前分支之间:
+
 	git diff master...contrib
 
 ### 代码集成
@@ -616,11 +688,14 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 #### 衍合与挑拣(cherry-pick）的流程
 挑拣可以只引入其中一个`commits`
 加入值希望提取`e43a6`到主干分支，可以:
+
 	git cherry-pick e43a6dhe3034ksndhgdgadsakxgc783h31ddlf
+
 这会引入`e43a6`的代码，但是会得到不同的SHA-1值
 
 ### 给发行版签名
 	git tag -s v1.5 -m 'my signed 1.5 tag'
+
 完成签名后，如何分发PGP公钥(public key)是个问题。（分发公钥是为了验证标签）。Git可以把key作为blob变量写入Git库，然后把它的内容直接写在标签里。`gpg --list-keys`命令可以显示出你所拥有的可以：
 
 	gpg --list-keys
@@ -631,16 +706,20 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 	sub   2048R/3A65452E 2015-01-14 [有效至：2016-01-14]
 
 然后，导出key的内容并精油管道符传递给`git hash-object`,之后key会以 blob类型写入Git中，最后返回这个blob量的SHA-1值
+
 	gpg -a --exprot 2944EE1F | git hash-object -w --stdin
 	b7db1fde0db0218f003920aa0ae14a7697dsad37
 
 现在Git已经包含了这个Key的内容，可以通过不同的SHA-1值指定不同的Key来创建标签
+
 	git tag -a maintainer-pgp-pub
 
 之后，可以将maintainer-pgp-pub 标签公布给所有人
+
 	git push --tags
 
 如果有人要校检标签，可以使用如下命令导入你的Key:
+
 	git show maintainer-pgp-pub | gpg --import
 
 ### 生成内部版本号
@@ -648,13 +727,17 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 
 ### 准备发布
 发布一个新版本，首先要将代码压缩归档，方便那些没有Git的人们。
+
 	git archive master --prefix='project/' | gzip > `git describe master`.tar.gz
+
 如果要发布zip压缩包
+
 	git archive master --prefix='project/' --format=zip > `git describe master`.zip
 
 ### 制作简报
 使用`git shortlog`可以方便快捷的制作一份修改日志.
 加入你上次发布的版本是v1.0.1，下面的命令将给出自从上次发布之后的所有提交的简介
+
 	git shortlog --no-merges master --not v1.0.1
 
 
@@ -668,30 +751,41 @@ Git项目本身有四个长期分支: 发布的`master`分支，用于合并基�
 	git show 1c002dd
 
 Git 可以为你的SHA-1值生成出简短且唯一的缩写。如果你传递`--abbrev-commit`给`git log`，输出结果里就会使用简短且唯一的值
+
 	git log --abbrev-commit --pretty=oneline
 
 ### 关于SHA-1的简短说明
 
 ### 分支引用
 如果topic1分支指向ca82a6d,下面等价:
+
 	git show ca82a6d
 	git show topic1
 
 `rev-parse`，探测工具，可以查看一个例子中被间歇的SHA-1,或者某个分支指向哪个特定的SHA.
+
 	git rev-parse topic1
 
 ### 引用日志里的简称
 	git reflog
+
 如果想查看HEAD在五次前的值，可以引用日志的输出中的`@{n}`引用
+
 	git show HEAD@{5}
+
 也可以查看某个分支在一定时间前的位置
+
 	git show master@{yesterday}
+
 想查看`git log`输出格式的引用日志信息:
+
 	git log -g master
+
 引用日志信息值存于本地
 
 ### 祖先引用
 可以使用`^`
+
 	git show HEAD^
 	git show d921970^2
 
@@ -701,21 +795,28 @@ Git 可以为你的SHA-1值生成出简短且唯一的缩写。如果你传递`-
 ### 提交范围
 #### 双点
 要看看实验分支那些没有被提交到主分支，可以使用`master..experiment`
+
 	git log master..experiment
+
 相反的，可以交换提交名字。
 这个语法的另一种常见也哦哦那个吐是查看你将把什么推送到远程:
+
 	git log origin/master..HEAD
+
 这条命令显示任何在你当前分支上而不在远程origin上的提交。
 也可以留空一边，让Git来假定它是HEAD
+
 	git log origin/master..
 
 #### 多点
-以下等他
+以下等同
+
 	git log refA..refB
 	git log ^refA refB
 	git log refB --not refA
 
 加入想查找从`refA`或`refB`包含的但是不被`refC`包含的提交，可以输入下面中的一个:
+
 	git log refA refB ^refC
 	git log refA refB --not refC
 
@@ -723,10 +824,12 @@ Git 可以为你的SHA-1值生成出简短且唯一的缩写。如果你传递`-
 	git log master...experiment
 
 log命令的一个常用参数是`--left-right`，会显示每个提交到底处于那一侧的分支。这使得数据更加有用
+
 	git log --left-right master...experiment
 
 ### 交互式暂存
 运行`git add`时加上`-i`或者`--interactive`，Git就会进入了一个交互式的`shell`模式:
+
 	git add -i
 
 ### 暂存和撤回文件
@@ -742,22 +845,34 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 
 ### 储藏你的工作
 	git stash
+
 如果要查看储存列表
+
 	git stash list
+
 如果想要应用储藏
+
 	git stash apply stash@{0}
+
 如果不指明，Git会使用最近的储藏并尝试使用它:
+
 	git stash apply
 
 `apply`选项只尝试应用储藏的工作，储藏的内容仍然在栈上，要移除，用`git stash drop`。
+
 	git stash drop stash@{0}
+
 也可以运行`git stash pop`来重新应用储藏，同事立刻从堆栈中移走。
 
 ### 取消储藏(Un-applying a stash)
 	git stash show -p stash@{0} | git apply -R
+
 同样，没有指定，Git会选择最近的储藏
+
 	git stash show -p | git apply -R
+
 可以在git中增加一个stash-unapply，这样更有效率:
+
 	git config --global alias.stash-unapply '!git stash show -p | git apply -R'
 	
 	git stash-unapply
@@ -772,13 +887,16 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 
 ### 改变最近一次提交
 改变最近一次的提交说明:
+
 	git commit --amend
+
 也可以先进行`add`或`rm`来从新提交快照
 
 不要在最近一次提交被推送后还去修正它，因为修正会改变提交的SHA-1值，这个很像一次非常小的rebase
 
 ### 修改多个提交说明
 	git rebase -i HEAD~3
+
 不要涵盖你已经推送的提交，这样提供了同样变更的不同版本。
 
 很重要的一点是你得注意这些提交的顺序与你通常通过log命令看到的是相反的。
@@ -791,12 +909,14 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 ### 压制(Squashing)提交
 
 将`pick`改为`squash`
+
 	pick f7f3f6d changed my name a bit
 	squash 310154e updated README formatting and added blame
 	squash a5f4a0d added cat-file
 
 ### 拆分提交
 可以在`rebase -i`脚本中修改想拆分的提交前的指令为`edit`.哪里你可以用`git reset HEAD^`对那次提交进行一次混合的重置，浙江撤销那次提交并且将修改的文件撤回。此时你可以暂存并提交文件，直到你拥有多次提交，结束后，运行`git rebase --continue`。
+
 	git reset HEAD^
 	git add README
 	git commit -m 'updated README'
@@ -813,9 +933,11 @@ Git在脚本中拆分中间那次，应用了最后一次提交。
 
 #### 从所有提交中删除一个文件
 比如从整个历史上删除一个叫`password.txt`的文件
+
 	git filter-brach --tree-filter 'rm -f passwords.txt' HEAD
 
 如果你想删除所有不小心提交上去的编辑器备份文件，你可以运行类似
+
 	git filter-branch --tree-filter "find * -type f -name '*~' -delete" HEAD
 
 Git重写目录树并且提交，然后将分支指针移动到末尾。
@@ -843,7 +965,9 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 	git blame -L 12,22 simplegit.rb
 
 如果在`git blame`后面加上`-C`，Git会分析你在标注的文件，然后尝试找出其中代码片段的原始出处， 如果它是从其他地方拷贝过来的话。
+
 	git blame -C -L 141,153 GITPackUpload.m
+
 这非常有用，Git可以告诉你编写最初那些行的原始提交，即便是在另外一个文件里。
 
 ### 二分查找
@@ -858,6 +982,7 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 
 Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大约12次提交，于是检出中间的一个。在这里，你可以运行测试来检查问题是否存在于这次提交。如果是，那么它是在这个提交之前的某一次引入的；如果否，那么问题是在之后。架设治理是没有错误的，那么你就通过`git bisect good`来告诉Git然后继续你的旅程:
 现在，你发现了提交是错误的，因此你通过`git bisect bad`来告诉Git:
+
 	git bisect bad
 
 
