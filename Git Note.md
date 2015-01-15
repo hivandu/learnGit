@@ -1,8 +1,13 @@
 > 此Note是在《Pro Git》基础上的学习笔记
+> 
 > 原文作者: Scott Chacon
+> 
 > 翻译制作: Andor Chen　　
+> 
 > 地址链接: http://leanpub.com/progit-cn
+> 
 > This version was published on 2014-05-14
+> 
 > This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License][1]　
 
 # Git 基础
