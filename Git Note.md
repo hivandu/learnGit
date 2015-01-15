@@ -770,6 +770,43 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 	git rebase -i HEAD~3
 不要涵盖你已经推送的提交，这样提供了同样变更的不同版本。
 
+<<<<<<< HEAD
+=======
+很重要的一点是你得注意这些提交的顺序与你通常通过log命令看到的是相反的。
+
+你需要修改这个脚本来让它停留在你想修改的变更上。要做到这一点，你只要将你想修改的每一次提交前面的pick改为edit。
+
+### 重排提交
+更改`pick`的顺序
+
+### 压制(Squashing)提交
+>>>>>>> 8103fe6... update Git Note for git rebase
+
+将`pick`改为`squash`
+	pick f7f3f6d changed my name a bit
+	squash 310154e updated README formatting and added blame
+	squash a5f4a0d added cat-file
+
+### 拆分提交
+可以在`rebase -i`脚本中修改想拆分的提交前的指令为`edit`.哪里你可以用`git reset HEAD^`对那次提交进行一次混合的重置，浙江撤销那次提交并且将修改的文件撤回。此时你可以暂存并提交文件，直到你拥有多次提交，结束后，运行`git rebase --continue`。
+	git reset HEAD^
+	git add README
+	git commit -m 'updated README'
+	git add lib/simplegit.rb
+	git commit -m 'added blame'
+	git rebase --continue
+
+Git在脚本中拆分中间那次，应用了最后一次提交。
+
+**注意：所有`rebase`操作会修改SHA值，请确保不含已推送到共享仓库的提交。**
+
+### 核弹级选项: filter-branch
+修改大量提交, `filter-branch`会大面积的修改你的历史。
+
+#### 从所有提交中删除一个文件
+比如从整个历史上删除一个叫`password.txt`的文件
+	git filter-brach --tree-filter 'rm -f passwords.txt' HEAD
+
 
 
 
