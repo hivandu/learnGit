@@ -824,14 +824,14 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 
 #### 全局性的更换电子邮件地址
 	git filter-branch --commit-filter '
-			if ["$GIT_AUTHOR_EMAIL" = "schacon@localhost" ];
-			then
-				GIT_AUTHOR_NAME="Hivan Du";
-				GIT_AUTHOR_EMAIL="doo@hivan.me";
-				git commit-tree "$@";
-			else
-				git commit-tree "$@";
-			fi' HEAD
+	        if ["$GIT_AUTHOR_EMAIL" = "schacon@localhost" ];
+	        then
+	            GIT_AUTHOR_NAME="Hivan Du";
+	            GIT_AUTHOR_EMAIL="doo@hivan.me";
+	            git commit-tree "$@";
+	        else
+	            git commit-tree "$@";
+	        fi' HEAD
 
 ## 使用Git调试
 ### 文件标注
@@ -839,8 +839,21 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 
 	git blame -L 12,22 simplegit.rb
 
+如果在`git blame`后面加上`-C`，Git会分析你在标注的文件，然后尝试找出其中代码片段的原始出处， 如果它是从其他地方拷贝过来的话。
+	git blame -C -L 141,153 GITPackUpload.m
+这非常有用，Git可以告诉你编写最初那些行的原始提交，即便是在另外一个文件里。
 
+### 二分查找
+如果你的状态已经经历了上百次的提交，可能就要求助于`bisect`命令了。它会在你的提交历史中进行二分查找来尽快确定哪次提交引入了错误。
+首先，你运行`git bisect start`启动，然后用`git bisect bad`来告诉系统当前的提交有问题了。然后你必须告诉`bisect`已知的最后一次正常状态是哪次提交，使用`git bisect good [good_commit]`:
+	git bisect start
+	git bisect bad
+	git bisect good v1.0
+	Bisecting: 6 revisions left to test after this
+	[ecb6e1bc347ccecc5f9350d878ce677feb13d3b2] error handling on repo
 
+Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大约12次提交，于是检出中间的一个。在这里，你可以运行测试来检查问题是否存在于这次提交。如果是，那么它是在这个提交之前的某一次引入的；如果否，那么问题是在之后。架设治理是没有错误的，那么你就通过`git bisect good`来告诉Git然后继续你的旅程:
+现在，你发现了提交是错误的，因此你通过git bisect bad来告诉Git:
 
 
 
