@@ -1006,9 +1006,56 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 
 	git submodule add git://github.com/chneukirchen/rack.git rack
 
+项目里`rack`子目录下有了一个Rack项目
 
+	git status
 
+会注意到有一个`.gitmodules`文件,这是一个配置文件，保存了项目URL和你拉取到本地子目录
 
+	cat .gitmodules
+	[submodule "rack"]
+			path = rack
+			url = git://github.com/chneukirchen/rack.git
+
+另外一项是`rack`
+如果运行在那上面运行`git diff`，会看到:
+
+	$ git diff --cached rack
+	diff --git a/rack b/rack
+	new file mode 160000
+	index 0000000..08d709f
+	--- /dev/null
+	+++ b/rack
+	@@ -0,0 +1 @@
+	+Subproject commit 08d709f78b8c5b0fbeb7821e37fa53e69afcf433
+
+关于子模块的重要一点:你记录他们当前确切所处的提交。你不能记录一个子模块的`master`或者其他的符号引用。
+
+当提交时，会看到类似下面的:
+
+	git ci -a -m 'git submodule add'
+	[develop dfc89b3] git submodule add
+	 3 files changed, 18 insertions(+)
+	 create mode 100644 .gitmodules
+	 create mode 160000 rack
+
+### 克隆一个带子模块的项目
+你将得到包含子项目的目录，但是没有文件:
+
+	git clone git://github.com/schacon/myproject.git
+
+这个时候`rock`目录存在了，但是是空的。这个时候必须运行两个命令:
+- 初始化本地配置文件
+
+		git submodule init
+
+- 从项目拉去所有数据并检出你上层项目里所列的合适的提交:
+
+		git submodule update
+
+现在`rack`子目录就处于先前提交的确切状态了。
+
+如果另外一个开发者变更了`rack`的代码，你拉去的那个引用然后归并之，将得到怪异的东西。
 
 
 
