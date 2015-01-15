@@ -1,8 +1,13 @@
 > 此Note是在《Pro Git》基础上的学习笔记
+> 
 > 原文作者: Scott Chacon
+> 
 > 翻译制作: Andor Chen　　
+> 
 > 地址链接: http://leanpub.com/progit-cn
+> 
 > This version was published on 2014-05-14
+> 
 > This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License][1]　
 
 # Git 基础
@@ -776,8 +781,6 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 	git rebase -i HEAD~3
 不要涵盖你已经推送的提交，这样提供了同样变更的不同版本。
 
-\<\<\<\<\<\<\< HEAD
-=======
 很重要的一点是你得注意这些提交的顺序与你通常通过log命令看到的是相反的。
 
 你需要修改这个脚本来让它停留在你想修改的变更上。要做到这一点，你只要将你想修改的每一次提交前面的pick改为edit。
@@ -786,7 +789,6 @@ log命令的一个常用参数是`--left-right`，会显示每个提交到底处
 更改`pick`的顺序
 
 ### 压制(Squashing)提交
-> > > > > > > 8103fe6... update Git Note for git rebase
 
 将`pick`改为`squash`
 	pick f7f3f6d changed my name a bit
@@ -847,6 +849,7 @@ Git重写目录树并且提交，然后将分支指针移动到末尾。
 ### 二分查找
 如果你的状态已经经历了上百次的提交，可能就要求助于`bisect`命令了。它会在你的提交历史中进行二分查找来尽快确定哪次提交引入了错误。
 首先，你运行`git bisect start`启动，然后用`git bisect bad`来告诉系统当前的提交有问题了。然后你必须告诉`bisect`已知的最后一次正常状态是哪次提交，使用`git bisect good [good_commit]`:
+
 	git bisect start
 	git bisect bad
 	git bisect good v1.0
