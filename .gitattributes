@@ -1,0 +1,9 @@
+# 识别二进制文件
+# *.pbxproj -crlf -diff
+# or
+*.pbxproj binary
+
+
+# 比较二进制文件
+# 比较word文件
+*.doc diff=word

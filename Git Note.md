@@ -1184,13 +1184,13 @@ Git发现你标记为正常的提交(v1.0)和当前的错误版本之间有大�
 
 ### 客户端基本配置
 	git config --help
-
+	
 	code.editor
 
 可以改变默认编辑器
 
 	git config --global core.editor sm -w
-
+	
 	commit.template
 
 提交的时候，Git会默认使用该文件定义的内容。
@@ -1199,7 +1199,7 @@ Ex: 你创建了一个模板文件`$HOME/.gitmessage.txt`:
 	subject line
 	what happened
 	[ticket: X]
-
+	
 	git config --global commit.template
 	$HOME/.gitmessage.txt
 	git commit
@@ -1220,7 +1220,7 @@ Ex: 你创建了一个模板文件`$HOME/.gitmessage.txt`:
 这个指定Git运行诸如`log`,`diff`等所使用的分页器，你能设置成用`more`或者任何你喜欢的分页器（默认是less), 当然你也可以什么都不用，设置空字符串:
 
 	git config --global core.paper "
-
+	
 	user.signingkey
 
 如果你要创建经签署的含附注的标签，那么把你的GPG签署密钥设置为配置项会更好，设置密钥ID如下:
@@ -1242,9 +1242,9 @@ PS: 关于gpg公钥的作用，是为了不让其他开发者随意修改代码�
 	git: 'com' is not a git command. See 'git --help'.
 	
 	Did you mean one of these?
-		commit
-		co
-		column
+	    commit
+	    co
+	    column
 
 如果把`help.autocorrect`设置成`1`（启用自动修正），那在只有一个命令被模糊匹配到的情况下，Git会自动运行该命令。
 
@@ -1323,6 +1323,150 @@ http://www.perforce.com/perforce/downloads/component.html
 设置完毕后，运行`diff`命令:
 
 	git diff 
+
+当合并两个分支，有冲突的时候，运行`git mergetool`，会调用P4Merge。
+
+设置包装脚本的好处是你能简单的改变diff和merge工具，例如把`extDiff`和`extMerge`改成`KDiff3`,要做的仅仅是编辑`extMerge`脚本:
+
+	cat /usr/local/bin/extMerge
+	#!/bin/sh
+	/Applications/kdiff3.app/Contents/MacOS/kdiff3 $*
+
+现在Git使用`KDiff3`来比较合并了。
+
+Git预置了许多其他工具:
+- kdiff3
+- opendiff
+- tkdiff
+- meld
+- xxdiff
+- emerge
+- vimdiff
+- gvimdiff
+如果不想用到KDiff3的所有功能，只是用来合并，那么kdiff3正符合要求:
+
+	git config --global merge.tool kdiff3
+
+### 格式化与空白
+
+	core.autocrlf
+
+如果是Windows上，将这项设置为`true`，这样当签出代码时候，`LF`会被转换成`CRLF`:
+
+	git config --global core.autocrlf true
+
+Linux或Mac使用`LF`作为行结束符，因此不想Git签出文件时进行转换；当一个以`CRLF`为行结束符的文件不小心被引入时你肯定想进行修正，把`core.autocrlf`设置成`input`来告诉Git在提交时把`CRLF`转换成`LF`，签出时不转换:
+
+	git config --global core.autocrlf input
+
+这样会在Windows上签出文件中保留CRLF，在Mac和Linux上，包括仓库中保留`LF`
+
+如果Windows上开发仅在Windows上运行的项目，可以`false`取消这项功能。
+
+`core.whitespace`
+
+Git预置了探测和修正空白问题的选项
+默认被打开的是`trailing-space`和`space-before-tab`
+前者会查找每行结尾的空格，后者会查找每行开头的制表符前的空格。
+
+默认关闭的是`indent-with-non-tab`和`cr-at-eol`;
+前者会炒找8个以上空格（不是制表符）开头的行，后者让Git知道行尾回车符是合法的。
+
+如果你想打开除了`cr-at-eol`之外的所有选项:
+
+	git config --global core.whitespace \ trailing-space, space-before-tab, indet-with-non-tab
+
+如果整准备运用的补丁有特别的空白问题，可以让Git发警告:
+
+	git apply --whitespace=warn <patch>
+
+或者让Git打补丁前自动修正此问题
+
+	git apply --whitespace=fix <patch>
+
+y也能运用于衍合。如果提交了有空白问题的文件但是还没有推送到上流，你可以运行带有`--whitespace=fix`选项的`rebase`来让Git在重写补丁时自动修正它们。
+
+### 服务器端配置
+`receive.fsckObjects`
+
+强迫Git每次推送都检查SHA-1一致性
+
+	git config --system receive.fsckObjects true
+
+`receive.denyNonFastForwards`
+
+禁用强制更新功能:
+
+	git config --system receive.denyNonFastForwards true
+
+`receive.denyDeletes`
+
+规避`denyNonFastForwards`策略的方法之一就是用户删除分支，然后推回新的引用。在更新的Git版本中，`receive.denyDeletes`设置为`true`
+
+	git config --system receive.denyDeletes true
+
+这样会在推送过程中阻止删除分支和标签 \-\- 没有用户能够这么做。要删除远程分支，必须从服务器手动删除引用文件。通过用户访问控制列表也能这么做，在本章结尾将会介绍这些有趣的方式。
+
+## Git属性
+一些设置项也能被运用于特定的路径中，这样，Git以对一个特定的子目录或子文件集运用那些设置项。这些设置项被成为Git属性，可以在目录中的`.gitattributes`文件内进行设置（通常是项目的根目录），也可以当你不想让这些属性文件和项目文件一通提交时，在`.git/info/attributes`进行设置。
+
+使用属性，你可以对个别文件或目录定义不同的合并策略，让 Git 知道怎样比较非文本文件，在你提交或签出前让 Git 过滤内容。你将在这部分了解到能在自己的项目中使用的属性，以及一些实例。
+
+### 二进制文件
+
+#### 识别二进制文件
+让Git把所有`pbxproj`文件当成二进制文件，在`.gitattributes`文件中设置如下:
+
+	*.pbxproj -crlf -diff
+
+现在，Git会尝试转换和修正`CRLF`问题，也不 会当你在项目中运行`git show`或`git diff`时，比较不同的内容。在Git1.6之后，可以用一个宏代替`-crlf -diff`:
+
+	*.pbxproj binary
+
+#### 比较二进制文件
+`MS Word files`
+
+Git属性能很好的解决比较两个不同版本的Word文件，把下面的行加到`.gitattributes`
+
+	*.doc diff=word
+
+`word过滤器`市集就是Git使用`Strings`程序，把word文档转换成可读的文本文件，之后再进行比较:
+
+	git config diff.word.textconv catdoc
+
+这个命令会在你的`.git/config`文件中增加一节:
+
+	[diff"word"]
+			textconv = catdoc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
