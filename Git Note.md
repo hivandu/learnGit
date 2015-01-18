@@ -1534,6 +1534,10 @@ Ex: 在`test/`子目录中有一些测试文件，在项目的压缩包中包含
 	git add LAST_COMMIT .gitattributes
 	git commit -am 'adding LAST_COMMIT file for archives'
 
+**PS: 测试不成功！**
+
+### 合并策略
+
 
 
 
