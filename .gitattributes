@@ -7,3 +7,5 @@
 # 比较二进制文件
 # 比较word文件
 *.doc diff=word
+*.txt ident
+*.c filter=indent
