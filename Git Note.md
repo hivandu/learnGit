@@ -1486,10 +1486,23 @@ Ex2: 类似RCS的`$Date$`关键字扩展。为了演示，需要一个小脚本�
 保存脚本为`expand_date`, 然后在Git设置一个过滤器，让它签出文件时调用`expand_date`,在暂存文件时用Perl清楚之：
 
 	git config filter.dater.smudge expand_date
-	git config filter.dater.clean 'perl-pe "s/\\\$Date[^\\\$]*\\\$Date\\\$/"'
+	git config filter.dater.clean 'perl -pe "s/\\\$Date[^\\\$]*\\\$/\\\$Date\\\$/"'
 
 这段程序会删除`$Date$`字符串中多余的字符，恢复`$Date$`原貌。
 
+	echo '# $Date$' > date_test.txt
+	echo 'date*.txt filter=dater' >> .gitattributes
+
+暂存该文件，之后签出，你会发现关键字被替换了:
+
+	git add date_test.txt .gitattributes
+	git commit -m "Testing date expansion in Git"
+	rm date_test.txt
+	git checkout date_test.txt
+	cat date_test.txt
+	$Date: Tue Apr 21 07:26:52 2009 -0700$
+
+虽说这项技术对自定义应用来说很有用，但还是要小心，因为`.gitattributes`文件会随着项目一起提交，而过滤器（例如：`dater`）不会，所以，过滤器不会在所有地方都生效。当你在设计这些过滤器时要注意，即使它们无法正常工作，也要让整个项目运作下去。
 
 
 
