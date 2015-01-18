@@ -9,3 +9,4 @@
 *.doc diff=word
 *.txt ident
 *.c filter=indent
+date*.txt filter=dater
