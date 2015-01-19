@@ -1751,18 +1751,7 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 
 
 
-\<\<\<\<\<\<\< HEAD
 
-=======
-> > > > > > > master
-
-\<\<\<\<\<\<\< HEAD
-\<\<\<\<\<\<\< HEAD
-
-=======
-> > > > > > > master
-=======
-> > > > > > > develop
 
 [1]:	http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US
 [4]:	http://www.kaleidoscopeapp.com/ksdiff
