@@ -1728,11 +1728,9 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 
 `master^{tree}`表示branch分支上最新提交指向的tree对象。请注意`lib`子目录并非一个`blob`对象，而是一个指向另一个`tree`对象的指针:
 
-<<<<<<< HEAD
-![][image-2}
-=======
-![]\(image-2)
->>>>>>> master
+![]\(images/pic-9-1.png)
+
+
 
 
 
@@ -1762,10 +1760,4 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 [7]:	https://git.wiki.kernel.org/index.php/GitHosting
 [8]:	http://airk000.github.io/git/2013/09/30/git-tag-with-gpg-key
 
-<<<<<<< HEAD
-
 [image-1]:	images/git_tree.jpg
-[image-2]: images/pic-9-1.png
-=======
-[image-1]:	images/git_tree.jpg
->>>>>>> master
