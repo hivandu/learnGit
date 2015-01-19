@@ -1730,6 +1730,73 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 
 ![][image-2]
 
+你可以自己创建`tree`。通常Git根据你的暂存区域或`index`来创建并写入一个`tree`。因此要创建一个`tree`对象的话首先要通过将一些文件暂存从而创建一个`index`。
+
+可以使用`plumbing`命令`update-index`为一个单独文件\-\-`test.txt`文件的第一个版本\-\- 创建一个`index`。
+
+通过该命令人为的将 `test.txt` 文件的首个版本加入到了一个新的暂存区域中。由于该文件原先并不在暂存区域中 (甚至就连暂存区域也还没被创建出来呢) ，必须传入 `--add` 参数;由于要添加的文件并不在当前目录下而是在数据库中，必须传入 `—-cacheinfo` 参数。同时指定了文件模式，SHA-1 值和文件名：
+
+	git update-index --add --cacheinfo 100644 83baae61804e65cc73a7201a7252750c76066a30 test.txt
+
+在本例中，指定了文件模式为`100644`，表明这是一个普通文件。其他可用的模式有：`100755` 表示可执行文件，`120000` 表示符号链接。文件模式是从常规的 UNIX 文件模式中参考来的，但是没有那么灵活 ── 上述三种模式仅对 Git 中的文件 (blobs) 有效 (虽然也有其他模式用于目录和子模块)。
+
+现在可以用`write-tree`命令将暂存区域的内容写到一个 tree 对象了。无需 `-w` 参数 ── 如果目标 tree 不存在，调用 `write-tree` 会自动根据 index 状态创建一个 tree 对象。
+
+	$ git write-tree
+	d8329fc1cc938780ffdd9f94e0d364e0ea74f579
+	$ git cat-file -p d8329fc1cc938780ffdd9f94e0d364e0ea74f579
+	100644 blob 83baae61804e65cc73a7201a7252750c76066a30      test.txt
+
+可以这样验证这确实是一个`tree`对象:
+
+	$ git cat-file -t d8329fc1cc938780ffdd9f94e0d364e0ea74f579
+	tree
+
+在根据`test.txt`的第二个版本以及一个新文件创建一个新`tree`对象:
+
+	$ echo 'new file' > new.txt
+	$ git update-index test.txt
+	$ git update-index --add new.txt
+
+这时暂存区域中包含了`test.txt`的新版本及一个新文件`nex.txt`。创建该`tree`对象，然后瞧瞧它的样子:
+
+	$ git write-tree
+	0155eb4229851634a0f03eb265b69f5a2d56f341
+	$ git cat-file -p 0155eb4229851634a0f03eb265b69f5a2d56f341
+	100644 blob fa49b077972391ad58037050f2a75f74e3671e92	new.txt
+	100644 blob 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a	test.txt
+
+请注意该 `tree` 对象包含了两个文件记录，且 `test.txt` 的 SHA 值是早先值的 “第二版” (1f7a7a)。来点更有趣的，你将把第一个 `tree` 对象作为一个子目录加进该 `tree` 中。可以用 `read-tree` 命令将 `tree` 对象读到暂存区域中去。在这时，通过传一个 `--prefix` 参数给 `read-tree`，将一个已有的 `tree` 对象作为一个子 `tree` 读到暂存区域中：
+
+	$ git read-tree --prefix=bak d8329fc1cc938780ffdd9f94e0d364e0ea74f579
+	$ git write-tree
+	3c4e9cd789d88d8d89c1073707c3585e41b0e614
+	$ git cat-file -p 3c4e9cd789d88d8d89c1073707c3585e41b0e614
+	040000 tree d8329fc1cc938780ffdd9f94e0d364e0ea74f579      bak
+	100644 blob fa49b077972391ad58037050f2a75f74e3671e92      new.txt
+	100644 blob 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a      test.txt
+
+![][image-3]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1760,4 +1827,5 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 [8]:	http://airk000.github.io/git/2013/09/30/git-tag-with-gpg-key
 
 [image-1]:	images/git_tree.jpg
-[image-2]: images/pic-9-1.png
+[image-2]:	images/pic-9-1.png
+[image-3]:	images/pic-9-2.png
