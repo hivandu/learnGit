@@ -1692,11 +1692,11 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 	$ echo 'version 1' > test.txt
 	$ git hash-object -w test.txt
 	83baae61804e65cc73a7201a7252750c76066a30
-
+	
 	$ echo 'version 2' > test.txt
 	$ git hash-object -w test.txt
 	1f7a7a472abf3dd9643fd615f6da379c4acb3e3a
-
+	
 	$ find .git/objects -type f
 	.git/objects/.DS_Store
 	.git/objects/1f/7a7a472abf3dd9643fd615f6da379c4acb3e3a
@@ -1728,7 +1728,7 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 
 `master^{tree}`表示branch分支上最新提交指向的tree对象。请注意`lib`子目录并非一个`blob`对象，而是一个指向另一个`tree`对象的指针:
 
-![]()(images/pic-9-1.png)
+![]\(image-2)
 
 
 
@@ -1757,6 +1757,5 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 [6]:	http://github.com/guides/providing-your-ssh-key
 [7]:	https://git.wiki.kernel.org/index.php/GitHosting
 [8]:	http://airk000.github.io/git/2013/09/30/git-tag-with-gpg-key
-
 
 [image-1]:	images/git_tree.jpg
