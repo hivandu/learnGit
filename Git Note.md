@@ -1763,8 +1763,8 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 	$ git write-tree
 	0155eb4229851634a0f03eb265b69f5a2d56f341
 	$ git cat-file -p 0155eb4229851634a0f03eb265b69f5a2d56f341
-	100644 blob fa49b077972391ad58037050f2a75f74e3671e92	new.txt
-	100644 blob 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a	test.txt
+	100644 blob fa49b077972391ad58037050f2a75f74e3671e92    new.txt
+	100644 blob 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a    test.txt
 
 请注意该 `tree` 对象包含了两个文件记录，且 `test.txt` 的 SHA 值是早先值的 “第二版” (1f7a7a)。来点更有趣的，你将把第一个 `tree` 对象作为一个子目录加进该 `tree` 中。可以用 `read-tree` 命令将 `tree` 对象读到暂存区域中去。在这时，通过传一个 `--prefix` 参数给 `read-tree`，将一个已有的 `tree` 对象作为一个子 `tree` 读到暂存区域中：
 
@@ -1778,30 +1778,583 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 
 ![][image-3]
 
+### commit对象
+现在有三个`tree`对象，它们只想了要跟踪的项目的不同快照。可是必须记住三个SHA-1值以获得这些快照。也没有关于谁，何时以及为何保存了这些快照的信息。commit对象为你保存了这些基本信息。
+
+要创建一个`commit`对象，使用`commit-tree`命令，指定一个 `tree` 的 SHA-1，如果有任何前继提交对象，也可以指定。从你写的第一个`tree`开始：
+
+	echo 'first commit' | git commit-tree d8329f
+	7ed079ac414f4db614997df8315d51a1fc814813
+
+通过`cat-file`查看这个新`commit`对象:
+
+	$ git cat-file -p 7ed079a
+	tree d8329fc1cc938780ffdd9f94e0d364e0ea74f579
+	author Hivan Du <doo@hivan.me> 1421721250 +0800
+	committer Hivan Du <doo@hivan.me> 1421721250 +0800
+	
+	first commit
+
+再写入另外两个`commit`对象，每一个都指定其之前的那个`commit`对象
+
+	$ echo 'second commit' | git commit-tree 0155eb -p 7ed079a
+	d107070aa3245ac410a0e5b710aa1b050fd1bb5e
+	$ echo 'third commit' | git commit-tree 3c4e9c -p d107070a
+	046dc663fbdb660a74e697bbe213fa3cff66e75c
+
+现在有了真实的Git历史了，所以运行`git log`命令并指定最后那个`commit`对象的SHA-1便可以查看历史:
+
+	$ git log --stat 046dc663
+	commit 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 10:41:16 2015 +0800
+	
+	    third commit
+	
+	 bak/test.txt | 1 +
+	 1 file changed, 1 insertion(+)
+	
+	commit d107070aa3245ac410a0e5b710aa1b050fd1bb5e
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 10:40:10 2015 +0800
+	
+	    second commit
+	
+	 new.txt  | 1 +
+	 test.txt | 2 +-
+	 2 files changed, 2 insertions(+), 1 deletion(-)
+	
+	commit 7ed079ac414f4db614997df8315d51a1fc814813
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 10:34:10 2015 +0800
+	
+	    first commit
+	
+	 test.txt | 1 +
+	 1 file changed, 1 insertion(+)
+
+这基本上就是运行　git add 和 git commit 命令时 Git 进行的工作　──保存修改了的文件的 blob，更新索引，创建 tree 对象，最后创建 commit 对象，这些 commit 对象指向了顶层 tree 对象以及先前的 commit 对象。这三类 Git 对象 ── blob，tree 以及 commit ── 都各自以文件的方式保存在 .git/objects 目录下。以下所列是目前为止样例中的所有对象，每个对象后面的注释里标明了它们保存的内容：
+
+	$ find .git/objects -type f
+	.git/objects/01/55eb4229851634a0f03eb265b69f5a2d56f341
+	.git/objects/04/6dc663fbdb660a74e697bbe213fa3cff66e75c
+	.git/objects/1f/7a7a472abf3dd9643fd615f6da379c4acb3e3a
+	.git/objects/3c/4e9cd789d88d8d89c1073707c3585e41b0e614
+	.git/objects/7e/d079ac414f4db614997df8315d51a1fc814813
+	.git/objects/83/baae61804e65cc73a7201a7252750c76066a30
+	.git/objects/d1/07070aa3245ac410a0e5b710aa1b050fd1bb5e
+	.git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
+	.git/objects/d8/329fc1cc938780ffdd9f94e0d364e0ea74f579
+	.git/objects/fa/49b077972391ad58037050f2a75f74e3671e92
+
+![][image-4]
+
+### 对象存储
+我们通过Ruby脚本语言存储一个`blob`对象（这里以字符串”what is up, doc?”为例)。
+
+	$  irb
+	irb(main):003:0> content = "What is up, doc?"
+	=> "What is up, doc?"
+
+Git以对象类型为起始内容构造一个文件头，本例中是一个`blob`。然后添加一个空格，接着是数据内容的长度，最后是一个空字节(null byte):
+
+	irb(main):004:0> header = "blob #{content.length}\0"
+	=> "blob 16\u0000"
+
+Git将文件头与原始数据内容拼接起来，并计算拼接后的新内容的SHA-1校验和。可以在Ruby中使用`require`语句导入`SHA1 digest`库，然后调用`Digest::SHA1.hexdigest()`方法计算字符串的SHA-1值：
+
+	irb(main):005:0> store = header + content
+	=> "blob 16\u0000What is up, doc?"
+	irb(main):006:0> require 'digest/sha1'
+	=> true
+	irb(main):007:0> sha1 = Digest::SHA1.hexdigest(store)
+	=> "64261f1bd850f248e0fde11ef1c3a95dd14322b8"
+
+Git用`zlib`对数据内容进行压缩，在Ruby中可以用`zlib`库来实现。首先需要导入该库，然后用`Zlib::Deflate.deflate()`对数据进行压缩:
+
+	irb(main):008:0> require 'zlib'
+	=> true
+	irb(main):009:0> zlib_content = Zlib::Deflate.deflate(store)
+	=> "x\x9CK\xCA\xC9OR04c\b\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00]\x1C\a}"
+
+最后将用`zlib`压缩后的内容写入磁盘。需要指定保存对象的路径(SHA-1值的头两个字符作为子目录名称，剩余38个字符作为文件名保存至该子目录中）。在RUby中，如果子目录不存在可以用`FileUtils.mkdir_p()`函数创建它。接着用`File.open()`方法打开文件，并用`write()`方法将之前压缩的内容写入该文件:
+
+	irb(main):010:0> path = '.git/objects/' + sha1[0,2] + '/' + sha1[2,38]
+	=> ".git/objects/64/261f1bd850f248e0fde11ef1c3a95dd14322b8"
+	irb(main):011:0> require 'fileutils'
+	=> true
+	irb(main):012:0> FileUtils.mkdir_p(File.dirname(path))
+	=> [".git/objects/64"]
+	irb(main):015:0> File.open(path, 'w') { |f| f.write zlib_content }
+	=> 32
+
+### Git References
+`git log 1a410e`这样的命令可以查看完整的历史，但是要记得`1a410e`是最后一次提交，这样才能在提交历史中找到这些对象。
+需要一个文件来用一个简单的名字记录这些SHA-1值，这样你就可以用这些指针而不是原来的SHA-1值去检索了。
+
+在Git中，我们称之为“引用”(`references` 或者`refs`)。你可以在`.git/refs`目录下面找到这些包含SHA-1值的文件。
+
+	$ find .git/refs
+	.git/refs
+	.git/refs/heads
+	.git/refs/tags
+
+创建一个新的引用帮助你记住最后一次提交，技术上你可以这样做:
+
+	echo "046dc663fbdb660a74e697bbe213fa3cff66e75c" > .git/refs/heads/master
+
+现在你就可以在Git命令中使用你刚才创建的引用而不是SHA-1值：
+
+	$ git log --pretty=oneline master
+	046dc663fbdb660a74e697bbe213fa3cff66e75c third commit
+	d107070aa3245ac410a0e5b710aa1b050fd1bb5e second commit
+	7ed079ac414f4db614997df8315d51a1fc814813 first commit
+
+如果确实需要更新一个引用，Git提供了安全命令`update-ref`:
+
+	$ git update-ref refs/heads/master 1a410efbd13591db07496601ebc7a059dd55cfe9
+
+基本上Git中的一个分支其实就是一个只想某个工作版本一条HEAD记录的指针或引用。你可以用这条命令创建一个指向第二次提交的分支:
+
+	$ git update-ref refs/heads/test d107070aa
+
+这样你的分支将会只包含那次提交以及之前的工作:
+
+	$ git log --pretty=oneline test
+	d107070aa3245ac410a0e5b710aa1b050fd1bb5e second commit
+	7ed079ac414f4db614997df8315d51a1fc814813 first commit
+
+![][image-5]
+
+当你执行`git branch`这样的命令，Git基本就是执行`update-ref`命令，把你现在所在分支中最后一次提交的SHA-1值，添加到你要创建的分支的引用。
+
+### HEAD 标记
+HEAD文件是一个指向你当前所在分支的引用标识符。这样的引用标识符\-\-它看起来并不像一个普通的引用\-\-其实并不包含SHA-1值，而是一个指向另外一个引用的指针。
+
+	$ cat .git/HEAD
+	ref: refs/heads/master
+
+更换分支，更新这个文件:
+
+	$ git checkout test
+	$ cat .git/HEAD
+	ref: refs/heads/test
+
+当你再执行`git commit`，就创建了一个`commit`对象，把这个`commit`对象的父级设置为HEAD指向的引用的SHA-1值。
+
+你可以手动编辑这个文件，但是同样有一个更安全的方法可以这样做: `symbolic-ref`。
+
+读取HEAD的值:
+
+	$ git symbolic-ref HEAD
+	refs/heads/test
+
+设置HEAD的值:
+
+	$ git symbolic-ref HEAD refs/heads/master
+	cat .git/HEAD
+	ref: refs/heads/master
+
+但是你不能设置成`refs`以外的形式:
+
+	$ git symbolic-ref HEAD test
+	fatal: Refusing to point HEAD outside of refs/
+
+### Tags
+`tag`对象指向一个`commit`而不是一个`tree`。它像一个分支引用，但是不会变化，永远指向同一个`commit`,仅仅是提供一个更加友好的名字。
+
+`tag`类型: `annotated`和`lightweight`。
+
+创建一个`lightweight tag`:
+
+	git update-ref refs/tags/v1.0 1a410efbd13591db07496601ebc7a059dd55cfe9
+
+`annotated tag`要复杂一点。Git会创建一个`tag`对象，然后写入一个指向指向它而不直接指向`commit`的`reference`
+
+	git tag -a v1.1 d107070aa3245ac410a0e5b710aa1b050fd1bb5e -m 'test tag'
+
+这就是所创建对象的SHA-1值
+
+	$ cat .git/refs/tags/v1.1
+	d80a563f7b5042d60b1e4bc2cb050a2b1488eaf9
+
+现在你可以运行`cat-file`检查这个SHA-1值
+
+	$ git cat-file -p d80a563f7b5042d60b1e4bc2cb050a2b1488eaf9
+	object d107070aa3245ac410a0e5b710aa1b050fd1bb5e
+	type commit
+	tag v1.1
+	tagger Hivan Du <doo@hivan.me> 1421736092 +0800
+	
+	test tag
 
 
+并不是必须要指向一个`commit`对象: 可以标记任何Git对象。
 
+	$ git cat-file blob junio-gpg-pub
 
+### Remotes
 
+	$ git remote add origin git@github.com:hviandu/simplegit-progit.git
+	$ git push origin master
 
+然后查看`refs/remotes/origin/master`这个文件
 
+	$ cat .git/refs/remotes/origin/master
+	ebc48739371e6b551187beec75a8cd734357ab5e
 
+### Packfiles
+现在`test Git`仓库有一下内容:
 
+	$ find .git/objects -type f
+	.git/objects/01/55eb4229851634a0f03eb265b69f5a2d56f341
+	.git/objects/04/6dc663fbdb660a74e697bbe213fa3cff66e75c
+	.git/objects/1f/7a7a472abf3dd9643fd615f6da379c4acb3e3a
+	.git/objects/3c/4e9cd789d88d8d89c1073707c3585e41b0e614
+	.git/objects/64/261f1bd850f248e0fde11ef1c3a95dd14322b8
+	.git/objects/7e/d079ac414f4db614997df8315d51a1fc814813
+	.git/objects/83/baae61804e65cc73a7201a7252750c76066a30
+	.git/objects/d1/07070aa3245ac410a0e5b710aa1b050fd1bb5e
+	.git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
+	.git/objects/d8/0a563f7b5042d60b1e4bc2cb050a2b1488eaf9
+	.git/objects/d8/329fc1cc938780ffdd9f94e0d364e0ea74f579
+	.git/objects/fa/49b077972391ad58037050f2a75f74e3671e92
 
+Git往磁盘保存对象时默认使用的是松散对象（loose object）格式。Git时不时将这些对象打包到一个`packfile`的二进制文件以节省空间并提高效率。当仓库中有太多的`loose object`，或是手工调用`git gc`，或推送到远程服务器，Git都会这样做。
 
+	$ git gc
+	$ find .git/objects -type f
+	.git/objects/64/261f1bd850f248e0fde11ef1c3a95dd14322b8
+	.git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
+	.git/objects/info/packs
+	.git/objects/pack/pack-755f058a26792005d37453d9dbd8b341c2c21310.idx
+	.git/objects/pack/pack-755f058a26792005d37453d9dbd8b341c2c21310.pack
 
+之前磁盘对象大小是12k，现在的`packfile` 仅仅6K大小。
 
+Git在打包对象的时候，会查找命名及尺寸相近的文件，并只保存文件不同那个版本之间的差异内容。可以查看一下`packfile`,观察它是如何节省空间的。`git verify-pack`命令用于显示已打包的内容:
 
+	$ git verify-pack -v .git/objects/pack/pack-755f058a26792005d37453d9dbd8b341c2c21310.idx
+	6353e941f6ab6069f452501483c7b73e5ef95780 commit 208 147 12
+	046dc663fbdb660a74e697bbe213fa3cff66e75c commit 207 145 159
+	d107070aa3245ac410a0e5b710aa1b050fd1bb5e commit 208 147 304
+	7ed079ac414f4db614997df8315d51a1fc814813 commit 159 118 451
+	d80a563f7b5042d60b1e4bc2cb050a2b1488eaf9 tag    127 122 569
+	b1a3beb2fceaed221312535e927cd5452c299ae2 tree   106 107 691
+	3c4e9cd789d88d8d89c1073707c3585e41b0e614 tree   101 105 798
+	d8329fc1cc938780ffdd9f94e0d364e0ea74f579 tree   36 46 903
+	0155eb4229851634a0f03eb265b69f5a2d56f341 tree   71 76 949
+	fa49b077972391ad58037050f2a75f74e3671e92 blob   9 18 1025
+	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 blob   0 9 1043
+	1f7a7a472abf3dd9643fd615f6da379c4acb3e3a blob   10 19 1052
+	83baae61804e65cc73a7201a7252750c76066a30 blob   10 19 1071
+	non delta: 13 objects
+	.git/objects/pack/pack-755f058a26792005d37453d9dbd8b341c2c21310.pack: ok
 
+随时可以重新打包，Git自动定期对仓库进行重新打包以节省空间。当然也可以手工运行`git gc`命令来这么做。
 
+### The Refspec
+假设添加一个远程仓库:
 
+	git remote add origin git@github.com:hivandu/simplegit-progit.git
 
+在你的`.git/config`文件中添加了一节，指定了远程的名称(origin)，远程仓库的URL地址，和用于获取操作的`Refspec`:
 
+	[remote "origin"]
+	        url = git@github.com:hivandu/simplegit-progit.git
+	        fetch = +refs/heads/*:refs/remotes/origin/*
 
+`Refspec`格式是一个可选的`+`号，接着是`<src>:<dst>`的格式， 这里`<src>`是远端上的引用格式，`<dst>`是将要记录在本地的引用格式。可选的`+`号告诉Git在即使不能快速演进的情况下，也去强制更新它。
 
+缺省`refspec`会被`git remote add`自动生成， Git会获取远端上`refs/heads/`下面的所有引用，并将它写入到本地的`refs/remotes/origin/`.所以，如果远端上有一个`master`分支，你在本地可以通过下面这种方式来访问它的历史记录
 
+	git log origin/master
+	git log remotes/origin/master
+	git log refs/remotes/origin/master
 
+它们全是等价的，因为Git把它们都扩展成
 
+	refs/remotes/origin/master`
+
+如果想让Git值拉去远程的`master`分支，可以修改`fetch`
+
+	fetch = +refs/heads/master:refs/remotes/origin/master
+
+也可以命令行内指定这个`refspec`:
+
+	git fetch origin master:refs/remotes/origin/mymaster
+
+也可以一次获取多个分支;
+
+	git fetch origin master:refs/remotes/origin/mymaster topic:refs/remotes/origin/mytopic
+
+如果`master`分支不可快速演进而拒绝拉去，可以在`refspec`之前使用一个`+`号来重载这种行为。
+
+也可以在配置文件中指定多个`refspec`:
+
+	[remote "origin"]
+	        url = git@github.com:hivandu/simplegit-progit.git
+	        fetch = +refs/heads/master:refs/remotes/origin/master
+	        fetch = +refs/heads/experiment:refs/remotes/origin/experiment
+
+但是这里不能使用部分通配符，一下不合法：
+
+	fetch = +refs/heads/qa*:refs/remotes/origin/qa*
+
+可以使用命名空间，假设有一个QA组,想每次获取`master`分支和QA组的所有分支，你可以使用这样的配置段落:
+
+	[remote "origin"]
+	        url = git@github.com:hivandu/simplegit-progit.git
+	    fetch = +refs/heads/master:refs/remotes/origin/master
+	    fetch = +refs/heads/qa/*:refs/remotes/origin/qa/*
+
+#### 推送 Refspec
+如果QA组成员想把他们的`master`分支推送到远程的`qa/master`分支上，可以这样运行:
+
+	$ git push origin master:refs/heads/qa/master
+
+如果他们想让Git每次运行`git push origin`时都这样自动推送，他们可以在配置文件中添加`push`值:
+
+	[remote "origin"]
+	        url = git@github.com:hivandu/simplegit-progit.git
+	    fetch=+refs/heads/*:refs/remotes/origin/*
+	    push=refs/heads/master:refs/heads/qa/master
+
+这样，就会让`git push origin`缺省就把本地的`master`分支推送到远程的`qa/master`分支上。
+
+#### 删除引用
+可以使用`refspec`来删除远程的引用:
+
+	git push origin :topic
+
+## 传输协议
+### 哑协议
+HTTP之上传输通常称为哑协议。
+
+	git clone http://github.com/schacon/simplegit-progit.git
+
+它做的第一件事就是获取`info/refs`文件，这个文件是在服务器端运行了`update-server-info`产生的，这也解释了为什么在服务器端要想使用HTTP传输，必须开启`post-receive`钩子:
+
+	=> GET info/refs
+	ca82a6dff817ec66f44342007202690a93763949 refs/heads/master
+
+现在有一个远端引用和SHA值的列表，下一步是寻找HEAD引用,这样就知道完成后什么应该被检出到工作目录:
+
+	=> GEAD HEAD
+	ref: refs/heads/master
+	
+	=> GET objects/ca/82a6dff817ec66f44342007202690a93763949 (179 bytes of binary data)
+
+然后取回了这个对象。
+
+可以使用`zlib`解压缩它，去除其头部，查看它的`commit`内容:
+
+	git cat-file -p ca82a6dff817ec66f44342007202690a93763949
+	tree cfda3bf379e4f8dba8717dee55aab78aef7f4daf
+	parent 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+	author Scott Chacon <schacon@gmail.com> 1205815931 -0700
+	committer Scott Chacon <schacon@gmail.com> 1240030591 -0700
+	
+	changed the version number
+
+这样，就得到了两个需要进一步获取的对象`cfda3b`是这个`commit`对象所对应的`tree`对象，和`085bb3b`是它的附对象；
+
+	=> GET objects/08/5bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+
+这样就取得了它下一步`commit`对象，再抓取`tree`对象:
+
+	=> GET objects/cf/da3bf379e4f8dba8717dee55aab78aef7f4daf
+	(404 - Not Found)
+
+### 智能协议
+
+#### 上传数据
+Git使用`send-pack`和`receive-pace`进程，前者在卡护短上，连直接远端运行的后者。
+
+#### 下载数据
+`fetch-pack`和`upload-pack`进程起作用，客户端启动前者，链接到远端的后者，协商后续数据传输过程。
+
+## 维护及数据恢复
+
+### 维护
+Git会自动运行称为”`auto gc`”的命令，大部分情况下该命令什么都不处理。太多`loose object`或`packfile`，Git会调用`git gc`. `gc`指垃圾收集。会手机所有的`loose object`并存入`packfile`,合并这些`packfile`进一个大的`packfile`,然后将不被任何`commit`引用并且已存在一段时间的对象删除。
+
+有7000个左右的`loose object`或50个以上的`packfile`，Git才会真的调用`gc`命令。
+
+可能通过修改配置文件中的`gc.auto`和`gc.autopacklimit`来调整这两个阈值。
+
+`gc`还会将所有引用(references)并入一个单独文件。假设仓库中包含一下分支和标签:
+
+	find .git/refs -type f
+	.git/refs/heads/experiment
+	.git/refs/heads/master
+	.git/refs/tags/v1.0
+	.git/refs/tags/v1.1
+
+运行`git gc`， `refs`下的所有文件都会小时。Git会将这些文件挪到`.git/packed-refs`文件中去提高效率。
+
+当更新一个引用，Git不会修改这个文件，而是在`refs/heads`下写入一个新文件。当查找一个引用的SHA时，Git首先在`refs`目录下查找，没有找到则到`packed-refs`文件中查找。
+
+`^`开头的，表示上一行的标签是一个`annotated`标签。而该行正是那个标签所指向的`commit`
+
+### 数据恢复
+假设我们不小心删除了一个`commit`:
+
+	git log --pretty=oneline
+	6353e941f6ab6069f452501483c7b73e5ef95780 added repo.rb
+	046dc663fbdb660a74e697bbe213fa3cff66e75c third commit
+	d107070aa3245ac410a0e5b710aa1b050fd1bb5e second commit
+	7ed079ac414f4db614997df8315d51a1fc814813 first commit
+
+接着将`master`分支移回到中间的一个`commit`:
+
+	$ git reset --head 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	HEAD is now at 046dc66 third commit
+	$ git log --pretty=oneline
+	046dc663fbdb660a74e697bbe213fa3cff66e75c third commit
+	d107070aa3245ac410a0e5b710aa1b050fd1bb5e second commit
+	7ed079ac414f4db614997df8315d51a1fc814813 first commit　
+
+这样就丢弃了最新的一个`commit`, 现在找回那两个`commit`的SHA:
+
+	$ git reflog
+	046dc66 HEAD@{0}: reset: moving to 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	6353e94 HEAD@{1}: merge recover-branch: Fast-forward
+	046dc66 HEAD@{2}: reset: moving to 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	6353e94 HEAD@{3}: commit: added repo.rb
+	046dc66 HEAD@{4}: checkout: moving from master to test
+
+运行`git log -g`输出`reflog`的正常日志
+
+	$ git log -g
+	commit 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	Reflog: HEAD@{2} (Hivan Du <doo@hivan.me>)
+	Reflog message: reset: moving to 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 10:41:16 2015 +0800
+	
+	    third commit
+	
+	commit 6353e941f6ab6069f452501483c7b73e5ef95780
+	Reflog: HEAD@{3} (Hivan Du <doo@hivan.me>)
+	Reflog message: commit: added repo.rb
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 14:53:59 2015 +0800
+	
+	    added repo.rb
+	
+	commit 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	Reflog: HEAD@{4} (Hivan Du <doo@hivan.me>)
+	Reflog message: checkout: moving from master to test
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 10:41:16 2015 +0800
+	
+	    third commit
+	
+	commit 046dc663fbdb660a74e697bbe213fa3cff66e75c
+	Author: Hivan Du <doo@hivan.me>
+	Date:   Tue Jan 20 10:41:16 2015 +0800
+	
+	    third commit
+
+可以在那个`commit`(6353e94)上创建一个名为`recover-branch`的分支:
+
+	$ git branch recover-branch 6353e94
+	$ git log --pretty=online recover-branch
+
+这样会有了跟原来`master`一模一样的`recover-branch`分支，最近的`commit`找回来了。
+
+接着，我们丢失了`commit`而且原因没有记录在`reflog`中:
+
+	git branch -D recover-branch
+	rm -rf .git/logs/
+
+这样就丢失了`logs/`目录下的`reflog`，使用`git fsck`工具，检查仓库的数据完整性。如果指定了`-full`选项，该命令显示所有没有被其他对象引用的所有对象:
+
+	$ git fsck --full
+	Checking object directories: 100% (256/256), done.
+	Checking objects: 100% (13/13), done.
+	dangling blob 64261f1bd850f248e0fde11ef1c3a95dd14322b8
+	dangling commit 6353e941f6ab6069f452501483c7b73e5ef95780
+	dangling blob d670460b4b4aece5915caf5c68d12f560a9fe3e4
+
+然后如上例新建一个分支指向该`SHA`的分支。
+
+### 移除对象
+**此方法会破坏提交历史，所有包含该引用的`tree`对象开始之后的所有`commit`对象都会被重写。如已经开始协作，你不得不通知所有协作者去衍合你新修改的`commit`**
+
+假设我copy进去一个大文件`Transmit 4.4.8.zip`
+
+	$ git rm Transmit\ 4.4.8.zip
+	rm 'Transmit 4.4.8.zip'
+	$ git commit -m 'oops - removed large tarball'
+
+对仓库进行`gc`操作，并查看占用了空间:
+
+	$ git gc
+	$ git count-objects -v
+	count: 2
+	size: 8
+	in-pack: 21
+	packs: 1
+	size-pack: 35939
+	prune-packable: 0
+	garbage: 0
+	size-garbage: 0
+
+`size-pack`以千字节为单位表示的`packfiles`的大小，因此已经使用了3.5M.而之前只使用了2K左右。显然没有真正将文件从历史记录中删除。
+
+首先我们找出这个文件。
+
+	$ git verify-pack -v .git/objects/pack/pack-451e5b4b4b181b897d260f60d683b2ad958767bd.idx | sort -k 3 -n | tail -3
+	fdfd598e47caa4dce262f1358c7d3ca5450e32b3 commit 222 158 327
+	aae9d6962c7f447f3bda03c5b1345ad3fd0b72bd commit 223 158 12
+	8e9822e11dcf6b82c4e17329546381df1cee9933 blob   37497078 36798049 1893
+
+现在查看是那个文件:
+
+	$ git rev-list --objects --all | grep 8e9822e1
+	8e9822e11dcf6b82c4e17329546381df1cee9933 Transmit 4.4.8.zip
+
+这里使用第七章中使用过的`rev-list`,若给`rev-list`传入`--objects`选项，会列出所有`commit` SHA值，`blob`SHA值及相应的文件路径。可以这样查看`blob`的文件名。
+
+现在从隶属记录的所有`tree`移除，很容易找出哪些`commit`修改了这个文件：
+
+	$ git log --pretty=oneline --branches -- Transmit\ 4.4.8.zip
+	aae9d6962c7f447f3bda03c5b1345ad3fd0b72bd oops - removed large tarball
+	1cc9c74b82fd7e79c667e98fe0b7fc8a281baf44 add Transmit.zip file
+
+现在必须重写从`1cc9c74`开始的所有`commit`才能将文件从Git历史中完全移除。
+
+	$ git filter-branch --index-filter 'git rm --cached --ignore-unmatch Transmit\ 4.4.8.zip' -- 1cc9c74b8^..
+	Rewrite 1cc9c74b82fd7e79c667e98fe0b7fc8a281baf44 (1/2)rm 'Transmit 4.4.8.zip'
+	Rewrite aae9d6962c7f447f3bda03c5b1345ad3fd0b72bd (2/2)
+	Ref 'refs/heads/master' was rewritten
+
+`--index-filter`选项类似于第六章使用的`--tree-filter`选项，但是这里不是传入一个命令去修改磁盘上的签出的文件，而是修改暂存区域或索引。不能也哦哦那个`rm file`命令来删除一个特定文件，而是必须用`git rm --cached`来删除它 \-\- 即从索引而不是磁盘删除它。这样是处于速度考虑\-\- 由于Git在运行你的`filter`之前无需将所有版本签出到磁盘上，这个操作会快很多。也可以用`--tree-filter`来完成相同的操作。 `git rm`的`--ignore-unmatch`选项指定当你试图删除的内容并不存在时不显示错误。最后，因为你清楚问题是从那个`commit`开始的，使用`filter-branch`重写自`1cc9c74b8`这个`commit`开始的所有历史记录。不这么做的话会重写所有历史记录，花费不必要的更多时间。
+
+现在`reflog`以及运行`filter-branch`时`Git`往`.git/refs/original`添加的一些`refs`中仍有对它的引用，因此需要将这些引用删除并对仓库进行`repack`操作。在`repack`前需要将所有对这些`commits`的引用去除:
+
+	$ rm -rf .git/refs/original
+	$ rm -rf .git/logs/
+	git gc
+	git count-objects -v
+	count: 6
+	size: 35976
+	in-pack: 19
+	packs: 1
+	size-pack: 3
+	prune-packable: 0
+	garbage: 0
+	size-garbage: 0
+之后的大小是3K,远远小于之前的3.5MB.
+
+从`size`可以看出，文件对象还存在与松散对象中，其实并没有消失，不过没关系，重要的是推送或复制，这个对象不会再传送出去。如果真的要完全删除对象，可以运行`git prune --expire`
+
+## 总结
+现在你应该对 Git 可以作什么相当了解了，并且在一定程度上也知道了 Git 是如何实现的。本章覆盖了许多 plumbing 命令 ── 这些命令比较底层，且比你在本书其他部分学到的 porcelain 命令要来得简单。从底层了解 Git 的工作原理可以帮助你更好地理解为何 Git 实现了目前的这些功能，也使你能够针对你的工作流写出自己的工具和脚本。
+
+Git 作为一套 content-addressable 的文件系统，是一个非常强大的工具，而不仅仅只是一个 VCS 供人使用。希望借助于你新学到的 Git 内部原理的知识，你可以实现自己的有趣的应用，并以更高级便利的方式使用 Git
 
 
 
@@ -1829,3 +2382,5 @@ Git存储数据的方式: 为每份内容生成一个文件，取得该内容与
 [image-1]:	images/git_tree.jpg
 [image-2]:	images/pic-9-1.png
 [image-3]:	images/pic-9-2.png
+[image-4]:	images/pic-9-3.png
+[image-5]:	images/pic-9-4.png
